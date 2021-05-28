@@ -7,7 +7,7 @@ volumes:
 services:
  postgres:
    restart: always
-   image: postgres:latest
+   image: postgres:13
    environment:
      POSTGRES_USER: openoversight
      POSTGRES_PASSWORD: terriblepassword
