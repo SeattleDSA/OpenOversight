@@ -120,10 +120,24 @@ For more details about the S3 and AWS settings, see above. Please raise an issue
 1. `dc run --rm web python ../create_db.py`
 1. `dc run --rm web flask make-admin-user`
 1. `dc run --rm web flask add-department "Seattle Police Department" "SPD"`
+1. `dc run --rm web flask `
 
 # TODO
 
 1. Figure out mailing steps?
+
+# Data ingestion
+
+Import from spd-lookup data:
+
+```python
+import pandas as pd
+df = pd.read_csv("SPD_Roster.csv")
+xdf = df.rename(columns={"title": "job_title", "badge": "star_no"})
+xdf = xdf[["star_no", "first_name", "last_name", "job_title"]]
+xdf["department_id"] = 1
+xdf.to_csv("./data/init_data.csv", index=False)
+```
 
 # Systemd
 
