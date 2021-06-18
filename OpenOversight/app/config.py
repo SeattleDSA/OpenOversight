@@ -20,7 +20,7 @@ class BaseConfig(object):
 
     # Mail Settings
     MAIL_SERVER = os.environ.get('MAIL_SERVER', 'smtp.googlemail.com')
-    MAIL_PORT = 587
+    MAIL_PORT = os.environ.get('MAIL_PORT')
     MAIL_USE_TLS = True
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
