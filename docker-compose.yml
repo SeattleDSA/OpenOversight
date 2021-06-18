@@ -4,14 +4,13 @@ services:
  postgres:
    restart: always
    image: postgres:13
+   env_file:
+     - .env
    environment:
      POSTGRES_USER: openoversight
-     POSTGRES_PASSWORD: terriblepassword
-     POSTGRES_DB: openoversight-dev
+     POSTGRES_DB: openoversight
    volumes:
      - postgres:/var/lib/postgresql/data
-   ports:
-     - "5432:5432"
 
  web:
    restart: always
@@ -26,13 +25,9 @@ services:
    volumes:
      - ./OpenOversight/:/usr/src/app/OpenOversight/:z
      - ./data:/data/
-   links:
-     - postgres:postgres
-   expose:
-     - "3000"
    command: scripts/entrypoint.sh
    ports:
-     - "3000:3000"
+     - "3005:3000"
    networks:
      - protonmail
      - default
