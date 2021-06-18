@@ -71,7 +71,9 @@ class ProductionConfig(BaseConfig):
 
     @classmethod
     def init_app(cls, app):  # pragma: no cover
-        config.init_app(app)
+        # ????????
+        # config.init_app(app)
+        pass
 
 
 config = {
