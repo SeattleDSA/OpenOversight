@@ -22,8 +22,9 @@ services:
    environment:
      FLASK_APP: app
      FLASK_ENV: "${FLASK_ENV:-development}"
+   links:
+     - postgres:postgres
    volumes:
-     - ./OpenOversight/:/usr/src/app/OpenOversight/:z
      - ./data:/data/
    command: scripts/entrypoint.sh
    ports:

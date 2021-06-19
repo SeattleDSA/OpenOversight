@@ -27,14 +27,10 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 
 COPY package.json /usr/src/app/
 RUN yarn
-
 COPY create_db.py /usr/src/app/
-EXPOSE 3000
-
-ENV PATH="/usr/src/app/geckodriver:${PATH}"
-ENV SECRET_KEY 4Q6ZaQQdiqtmvZaxP1If
-ENV SQLALCHEMY_DATABASE_URI postgresql://openoversight:terriblepassword@postgres/openoversight-dev
 
 WORKDIR /usr/src/app/OpenOversight
+
+COPY OpenOversight .
 
 CMD ["scripts/entrypoint.sh"]
