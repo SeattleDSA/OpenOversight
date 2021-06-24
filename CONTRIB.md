@@ -53,6 +53,11 @@ $ docker exec -it openoversight_web_1 /bin/bash
 
 Once you're done, `make stop` and `make clean` to stop and remove the containers respectively.
 
+### SDSA Notes
+
+- The docker compose file requires an extra network for emailing.
+  The mailer is not used in development, and so this can be shimmed with `docker network create protonmail`.
+
 ## Testing S3 Functionality
 
 We use an S3 bucket for image uploads. If you are working on functionality involving image uploads,
