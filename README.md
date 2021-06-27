@@ -12,6 +12,7 @@ To run the project locally:
 1. Create a shimmed email network (this is not used in development): `docker network create protonmail`.
 1. Copy the sample data to the data folder mounted by the project `cp database/sample_init_data.csv data/init_data.csv`.
 1. Use the `fresh_start.sh` script to quickly build, start, and populate OpenOversight locally.
+1. Run `docker-compose up -d` and visit http://localhost:3005!
 
 
 ## Deployment
