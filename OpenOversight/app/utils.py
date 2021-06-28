@@ -232,7 +232,7 @@ def compute_hash(data_to_hash):
 
 
 def upload_obj_to_s3(file_obj, dest_filename):
-    s3_client = boto3.client('s3')
+    s3_client = boto3.client('s3', endpoint_url=current_app.config['AWS_ENDPOINT_URL'])
 
     # Folder to store files in on S3 is first two chars of dest_filename
     s3_folder = dest_filename[0:2]
@@ -249,7 +249,9 @@ def upload_obj_to_s3(file_obj, dest_filename):
     config = s3_client._client_config
     config.signature_version = botocore.UNSIGNED
     url = boto3.resource(
-        's3', config=config).meta.client.generate_presigned_url(
+        's3', config=config,
+        endpoint_url=current_app.config['AWS_ENDPOINT_URL']
+    ).meta.client.generate_presigned_url(
         'get_object',
         Params={'Bucket': current_app.config['S3_BUCKET_NAME'],
                 'Key': s3_path})
