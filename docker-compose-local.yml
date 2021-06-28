@@ -1,0 +1,54 @@
+version: "3"
+
+services:
+ postgres:
+   restart: always
+   image: postgres:13
+   env_file:
+     - .env
+   environment:
+     POSTGRES_USER: openoversight
+     POSTGRES_DB: openoversight
+   volumes:
+     - postgres:/var/lib/postgresql/data
+
+ minio:
+   image: minio/minio
+   volumes:
+     - minio:/data
+   ports:
+     - "9000:9000"
+   env_file:
+     - .env
+   environment:
+     MINIO_ROOT_USER: minio
+   # Make the bucket on startup
+   entrypoint: bash
+   command: "-c 'mkdir -p /data/${S3_BUCKET_NAME} && minio server /data'"
+   healthcheck:
+     test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+     interval: 30s
+     timeout: 20s
+     retries: 3
+
+ web:
+   restart: always
+   build:
+      context: .
+      dockerfile: ./dockerfiles/web/Dockerfile
+   env_file:
+     - .env
+   environment:
+     FLASK_APP: app
+     FLASK_ENV: "${FLASK_ENV:-development}"
+   links:
+     - postgres:postgres
+   volumes:
+     - ./data:/data/
+   command: scripts/entrypoint.sh
+   ports:
+     - "3000:3000"
+
+volumes:
+  postgres:
+  minio:
