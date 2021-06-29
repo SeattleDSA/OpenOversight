@@ -221,6 +221,9 @@ def get_random_image(image_query):
 
 
 def serve_image(filepath):
+    # Custom change for development
+    if "minio" in filepath:
+        filepath = filepath.replace("minio", "localhost")
     if 'http' in filepath:
         return filepath
     if 'static' in filepath:
