@@ -35,6 +35,7 @@ services:
      - .env
    depends_on:
      - minio
+   # Add the desired bucket, and set its policy to public
    entrypoint: >
      /bin/sh -c "
      /usr/bin/mc config host add myminio http://minio:9000 minio ${MINIO_ROOT_PASSWORD};
