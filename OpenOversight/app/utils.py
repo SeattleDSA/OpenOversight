@@ -570,7 +570,7 @@ def find_date_taken(pimage):
 # https://gist.github.com/ngtvspc/a686dda375df122ba1a5dd8e6654532b
 def scrub_exif(pimage):
     image_data = list(pimage.getdata())
-    image_without_exif = Image.new(pimage.mode, pimage.size)
+    image_without_exif = Pimage.new(pimage.mode, pimage.size)
     image_without_exif.putdata(image_data)
     return image_without_exif
 
