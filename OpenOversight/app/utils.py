@@ -559,10 +559,11 @@ def find_date_taken(pimage):
     if isinstance(pimage, PngImageFile):
         return None
 
-    if pimage._getexif():
+    exif = hasattr(pimage, '_getexif') and pimage._getexif()
+    if exif:
         # 36867 in the exif tags holds the date and the original image was taken https://www.awaresystems.be/imaging/tiff/tifftags/privateifd/exif.html
-        if 36867 in pimage._getexif():
-            return pimage._getexif()[36867]
+        if 36867 in exif:
+            return exif[36867]
     else:
         return None
 
