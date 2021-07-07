@@ -526,7 +526,7 @@ def upload_image_to_s3_and_store_in_db(image_buf, user_id, department_id=None):
     date_taken = find_date_taken(pimage)
     if date_taken:
         date_taken = datetime.datetime.strptime(date_taken, '%Y:%m:%d %H:%M:%S')
-    scrub_exif(pimage)
+    pimage.getexif().clear()
     scrubbed_image_buf = BytesIO()
     pimage.save(scrubbed_image_buf, image_type)
     scrubbed_image_buf.seek(0)
@@ -567,11 +567,6 @@ def find_date_taken(pimage):
             return exif[36867]
     else:
         return None
-
-
-# https://gist.github.com/ngtvspc/a686dda375df122ba1a5dd8e6654532b
-def scrub_exif(pimage: Pimage.Image):
-    pimage.getexif().clear()
 
 
 def get_officer(department_id, star_no, first_name, last_name):
