@@ -1,3 +1,3 @@
-{% if current_user.is_administrator or (current_user.is_area_coordinator and current_user.ac_department_id == officer.department_id) %}
+{% if is_admin_or_coordinator %}
     <a class="btn btn-primary" href={{ url_for('main.submit_officer_images', officer_id=officer.id) }}>Add photos of this officer</a>
 {% endif %}
