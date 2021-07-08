@@ -1095,6 +1095,7 @@ def upload(department_id, officer_id=None):
             image.is_tagged = True
             image.contains_cops = True
             face = Face(officer_id=officer_id,
+                        # Assuming photos uploaded with an officer ID are already cropped, so we set both images to the uploaded one
                         img_id=image.id,
                         original_image_id=image.id,
                         user_id=current_user.get_id())
