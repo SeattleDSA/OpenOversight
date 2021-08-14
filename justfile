@@ -22,3 +22,6 @@ fresh-start:
 	{{ RUN }} flask make-admin-user
 	{{ RUN }} flask add-department "Seattle Police Department" "SPD"
 	{{ RUN }} flask bulk-add-officers /data/init_data.csv
+
+import +args:
+	{{ RUN }} flask advanced-csv-import {{ args }}
