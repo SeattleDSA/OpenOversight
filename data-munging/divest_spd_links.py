@@ -9,9 +9,9 @@ def main(id_path: Path, link_path: Path, output: Path):
     ids = pd.read_csv(id_path, usecols=["id", "badge number"])
     links = pd.read_csv(link_path)
     # Collapse the multiple links columns into a single column list
-    links["url"] = (
-        links[["Links", "last updated: 8/6/2021", "Unnamed: 6"]].values.tolist().head()
-    )
+    links["url"] = links[
+        ["Links", "last updated: 8/6/2021", "Unnamed: 6"]
+    ].values.tolist()
     # Make the badge column a string
     links["badge number"] = links["Badge Number"].astype(str)
     # Subset the columns at this point
@@ -21,7 +21,9 @@ def main(id_path: Path, link_path: Path, output: Path):
     # Drop any rows where a link doesn't exist (this will be most)
     links = links[links["url"].notna()]
     # Join the two dataframes on badge number, discard any rows with missing values
-    merged = links.merge(ids, how="inner").astype({"id": pd.Int64Dtype()})[["id", "url"]]
+    merged = links.merge(ids, how="inner").astype({"id": pd.Int64Dtype()})[
+        ["id", "url"]
+    ]
     # Rename id to "officer_ids", used in importer:
     # https://openoversight.readthedocs.io/en/latest/advanced_csv_import.html#links-csv
     merged.columns = ["officer_ids", "url"]
@@ -29,4 +31,22 @@ def main(id_path: Path, link_path: Path, output: Path):
     merged["title"] = "Divest SPD Twitter thread"
     merged["link_type"] = "Link"
     merged["author"] = "Divest SPD"
+    # Modify the information for tweets not made by Divest SPD
+    _not_divest = ~merged["url"].str.contains("DivestSPD")
+    merged.loc[_not_divest, "title"] = "Meet SPD Twitter thread"
+    merged.loc[_not_divest, "author"] = "nbd1232"
+    # Add an empty id column
+    merged["id"] = None
     merged.to_csv(output, index=False)
+
+
+@click.command()
+@click.argument("id_path", type=click.Path(exists=True, path_type=Path))
+@click.argument("link_path", type=click.Path(exists=True, path_type=Path))
+@click.argument("output", type=click.Path(exists=True, path_type=Path))
+def cli(id_path: Path, link_path: Path, output: Path):
+    main(id_path, link_path, output)
+
+
+if __name__ == "__main__":
+    cli()
