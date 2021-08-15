@@ -1,5 +1,6 @@
 DC := "docker-compose"
 RUN := DC + " run --rm web"
+set dotenv-load := false
 
 
 build:
@@ -22,6 +23,9 @@ fresh-start:
 	{{ RUN }} flask make-admin-user
 	{{ RUN }} flask add-department "Seattle Police Department" "SPD"
 	{{ RUN }} flask bulk-add-officers /data/init_data.csv
+
+run +args:
+	{{ RUN }} {{ args }}
 
 import +args:
 	{{ RUN }} flask advanced-csv-import {{ args }}
