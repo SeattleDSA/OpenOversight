@@ -12,6 +12,7 @@ log = logging.getLogger()
 def main(id_path: Path, demographic_path: Path, output: Path):
     log.info("Starting import")
     ids = pd.read_csv(id_path, usecols=["id", "badge number"])
+    # Read only specific columns from the Crisis Data CSV
     demo = pd.read_csv(
         demographic_path,
         usecols=[
@@ -23,9 +24,13 @@ def main(id_path: Path, demographic_path: Path, output: Path):
     )
     # Join the two dataframes on badge number
     demo.columns = ["badge", "gender", "race", "dob"]
+    # These records are unique on other fields, so there are lots of duplicates
     demo = demo.drop_duplicates()
+    # Convert gender into a pandas "category" type
     demo.loc[:, "gender"] = demo["gender"].astype("category")
+    # Rename the "no data" category to what OO is expecting
     demo.loc[:, "gender"] = demo["gender"].cat.rename_categories({"N": "Other"})
+    # Replace the races from the Crisis Data with what OO is expecting
     races = {
         "White": "WHITE",
         "Asian": "ASIAN",
@@ -38,11 +43,15 @@ def main(id_path: Path, demographic_path: Path, output: Path):
         "Unknown": None,
     }
     demo.loc[:, "race"] = demo["race"].replace(races)
+    # Convert DOB from a full ISO 8601 timestamp to just the year
     demo.loc[:, "dob"] = demo["dob"].str[:4].astype(int)
+    # Badge has spaces after it in the Crisis Data CSV, so drop that
     demo.loc[:, "badge"] = demo["badge"].str.strip()
+    # Merge with the ID spreadsheet based on badge
     merged = demo.merge(
         ids, how="left", left_on="badge", right_on="badge number"
     ).astype({"id": pd.Int64Dtype()})
+    # Reduce to only the necessary columns
     merged = merged[["id", "gender", "race", "dob"]]
     # Rename columns, add required
     # https://openoversight.readthedocs.io/en/latest/advanced_csv_import.html#officers-csv
