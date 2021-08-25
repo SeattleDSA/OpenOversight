@@ -51,14 +51,14 @@ def main(id_path: Path, demographic_path: Path, output: Path):
     merged = demo.merge(
         ids, how="left", left_on="badge", right_on="badge number"
     ).astype({"id": pd.Int64Dtype()})
+    # Split off the links that don't have an OpenOversight badge associated with them
+    _has_id = merged["id"].notna()
+    missing = merged[~_has_id]
     # Reduce to only the necessary columns
     merged = merged[["id", "gender", "race", "dob"]]
     # Rename columns, add required
     # https://openoversight.readthedocs.io/en/latest/advanced_csv_import.html#officers-csv
     merged.columns = ["id", "gender", "race", "birth_year"]
-    # Split off the links that don't have an OpenOversight badge associated with them
-    _has_id = merged["id"].notna()
-    missing = merged[~_has_id]
     # Remove those missing urls
     merged = merged[_has_id]
     # Add the extra column info
