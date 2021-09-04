@@ -13,13 +13,15 @@ log = logging.getLogger()
 def main(id_path: Path, data: Path, output: Path):
     log.info("Starting import")
     df = pd.read_csv(data, usecols=["Name", "Base Pay", "Overtime"])
-    df["last"] = df.Name.str.split(",").str[0]
-    df["first"] = df.Name.str.split(",").str[1].str.split(" ").str[0]
     ids = pd.read_csv(
         id_path,
         usecols=["id", "first name", "last name"],
     )
     ids.columns = ["id", "last", "first"]
+    # Remove Jr, IV, II, III, etc.
+    df.loc[:, "Name"] = df.Name.replace(r" ?((Jr)|(II)|(III)|(IV))\.?", "", regex=True)
+    df["last"] = df.Name.str.split(",").str[0]
+    df["first"] = df.Name.str.split(",").str[1].str.split(" ").str[0]
     merged = df.merge(ids, how="left", on=["last", "first"]).astype(
         {"id": pd.Int64Dtype()}
     )
