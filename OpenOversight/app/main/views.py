@@ -905,7 +905,7 @@ def download_dept_assignments_csv(department_id):
                    .options(joinedload(Assignment.job))
                    )
 
-    field_names = ["id", "officer id", "officer unique identifier", "badge number", "job title", "start date", "end date", "unit id"]
+    field_names = ["id", "officer id", "officer unique identifier", "badge number", "job title", "start date", "end date", "unit id", "unit description"]
     return downloads.make_downloadable_csv(assignments, department_id, "Assignments", field_names, downloads.assignment_record_maker)
 
 
