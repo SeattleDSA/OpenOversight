@@ -943,6 +943,19 @@ def download_dept_links_csv(department_id):
     return downloads.make_downloadable_csv(links, department_id, "Links", field_names, downloads.links_record_maker)
 
 
+@main.route('/download/department/<int:department_id>/descriptions', methods=['GET'])
+@limiter.limit('5/minute')
+def download_dept_descriptions_csv(department_id):
+    notes = (db.session.query(Description)
+             .join(Description.officer)
+             .filter(Officer.department_id == department_id)
+             .options(contains_eager(Description.officer))
+             )
+
+    field_names = ["id", "text_contents", "creator_id", "officer_id", "date_created", "date_updated"]
+    return downloads.make_downloadable_csv(notes, department_id, "Notes", field_names, downloads.descriptions_record_maker)
+
+
 @sitemap_include
 @main.route('/download/all', methods=['GET'])
 def all_data():

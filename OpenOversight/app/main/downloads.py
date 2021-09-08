@@ -13,6 +13,7 @@ from OpenOversight.app.models import (
     Assignment,
     Incident,
     Link,
+    Description,
 )
 
 T = TypeVar("T")
@@ -150,4 +151,15 @@ def links_record_maker(link: Link) -> _Record:
         "author": link.author,
         "officers": [officer.id for officer in link.officers],
         "incidents": [incident.id for incident in link.incidents],
+    }
+
+
+def descriptions_record_maker(description: Description) -> _Record:
+    return {
+        "id": description.id,
+        "text_contents": description.text_contents,
+        "creator_id": description.creator_id,
+        "officer_id": description.officer_id,
+        "date_created": description.date_created,
+        "date_updated": description.date_updated,
     }
