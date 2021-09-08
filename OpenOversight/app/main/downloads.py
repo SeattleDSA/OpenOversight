@@ -6,7 +6,14 @@ from typing import List, TypeVar, Callable, Dict, Any
 from flask import Response, abort
 from sqlalchemy.orm import Query
 
-from OpenOversight.app.models import Department, Salary, Officer, Assignment, Incident
+from OpenOversight.app.models import (
+    Department,
+    Salary,
+    Officer,
+    Assignment,
+    Incident,
+    Link,
+)
 
 T = TypeVar("T")
 _Record = Dict[str, Any]
@@ -130,4 +137,17 @@ def incidents_record_maker(incident: Incident) -> _Record:
         "licenses": " ".join(map(str, incident.license_plates)),
         "links": " ".join(map(str, incident.links)),
         "officers": " ".join(map(str, incident.officers)),
+    }
+
+
+def links_record_maker(link: Link) -> _Record:
+    return {
+        "id": link.id,
+        "title": link.title,
+        "url": link.url,
+        "link_type": link.link_type,
+        "description": link.description,
+        "author": link.author,
+        "officers": [officer.id for officer in link.officers],
+        "incidents": [incident.id for incident in link.incidents],
     }
