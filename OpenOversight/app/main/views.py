@@ -1058,6 +1058,44 @@ def download_incidents_csv(department_id):
     return Response(csv, mimetype="text/csv", headers=csv_headers)
 
 
+@main.route('/download/department/<int:department_id>/salaries', methods=['GET'])
+@limiter.limit('5/minute')
+def download_dept_salaries_csv(department_id):
+    department = Department.query.filter_by(id=department_id).first()
+    if not department:
+        abort(404)
+
+    salaries = (db.session.query(Salary)
+                .join(Salary.officer)
+                .filter(Officer.department_id == department_id)
+                .options(contains_eager(Salary.officer))
+                )
+
+    csv_output = io.StringIO()
+    csv_fieldnames = ["id", "officer id", "first name", "last name", "salary", "overtime_pay", "year", "is_fiscal_year"]
+    csv_writer = csv.DictWriter(csv_output, fieldnames=csv_fieldnames)
+    csv_writer.writeheader()
+
+    for salary in salaries:
+        record = {
+            "id": salary.id,
+            "officer id": salary.officer_id,
+            "first name": salary.officer.first_name,
+            "last name": salary.officer.last_name,
+            "salary": salary.salary,
+            "overtime_pay": salary.overtime_pay,
+            "year": salary.year,
+            "is_fiscal_year": salary.is_fiscal_year,
+        }
+        csv_writer.writerow(record)
+
+    dept_name = department.name.replace(" ", "_")
+    csv_name = dept_name + "_Salaries.csv"
+
+    csv_headers = {"Content-disposition": "attachment; filename=" + csv_name}
+    return Response(csv_output.getvalue(), mimetype="text/csv", headers=csv_headers)
+
+
 @sitemap_include
 @main.route('/download/all', methods=['GET'])
 def all_data():
