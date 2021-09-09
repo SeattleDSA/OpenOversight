@@ -36,7 +36,13 @@
                 </tr>
                 <tr>
                     <td><b>Birth Year (Age)</b></td>
-                    <td>{{ officer.birth_year }} (~{{ officer.birth_year|get_age }} y/o)</td>
+                    <td>
+                        {% if officer.birth_year %}
+                        {{ officer.birth_year }} (~{{ officer.birth_year|get_age }} y/o)
+                        {% else %}
+                        Data Missing
+                        {% endif %}
+                    </td>
                 </tr>
                 <tr>
                     <td><b>First Employment Date</b></td>
