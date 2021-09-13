@@ -978,7 +978,9 @@ def upload(department_id, officer_id=None):
         officer = Officer.query.filter_by(id=officer_id).first()
         if not officer:
             return jsonify(error='This officer does not exist.'), 404
-        if current_user.is_anonymous or current_user.ac_department_id != officer.department_id:
+        if current_user.is_anonymous or (
+            not current_user.is_administrator and current_user.ac_department_id != officer.department_id
+        ):
             return jsonify(error='You are not authorized to upload photos of this officer.'), 403
     file_to_upload = request.files['file']
     if not allowed_file(file_to_upload.filename):
