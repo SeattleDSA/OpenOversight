@@ -34,3 +34,6 @@ run +args:
 
 import +args:
 	{{ RUN }} flask advanced-csv-import {{ args }}
+
+lint:
+    pre-commit run --all-files
