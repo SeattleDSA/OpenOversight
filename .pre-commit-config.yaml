@@ -69,7 +69,7 @@ repos:
         description: Only executable files should have shebangs (e.g. '#!/usr/bin/env python')
         entry: "#!/"
         pass_filenames: true
-        exclude: bin|cli|manage.py|app.py|setup.py|docs
+        exclude: bin|cli|manage.py|app.py|setup.py|docs|data-munging|create_db.py|test_data.py
         files: \.py$
 
   - repo: https://gitlab.com/pycqa/flake8

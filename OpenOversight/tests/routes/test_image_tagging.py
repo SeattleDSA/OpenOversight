@@ -330,7 +330,7 @@ def test_ac_can_set_featured_tag_in_their_dept(mockdata, client, session):
 
         featured_tag = (
             Face.query.filter(Face.officer_id == tag.officer_id)
-            .filter(Face.featured == True)
+            .filter(Face.featured)
             .one_or_none()
         )  # noqa: E712
         assert featured_tag is not None
@@ -355,7 +355,7 @@ def test_ac_cannot_set_featured_tag_not_in_their_dept(mockdata, client, session)
 
         featured_tag = (
             Face.query.filter(Face.officer_id == tag.officer_id)
-            .filter(Face.featured == True)
+            .filter(Face.featured)
             .one_or_none()
         )  # noqa: E712
         assert featured_tag is None

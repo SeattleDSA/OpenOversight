@@ -640,7 +640,7 @@ def csvfile(mockdata, tmp_path, request):
                     },
                 )
             writer.writerow(towrite)
-    except:  # noqa E722
+    except:  # noqa: E722
         raise
     finally:
         csvf.close()

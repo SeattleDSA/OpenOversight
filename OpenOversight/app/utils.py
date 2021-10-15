@@ -335,9 +335,9 @@ def filter_by_form(form_data, officer_query, department_id=None):
                     Officer.birth_year <= min_birth_year,
                     Officer.birth_year >= max_birth_year,
                 ),
-                Officer.birth_year == None,
+                Officer.birth_year is None,
             )
-        )  # noqa
+        )
 
     job_ids = []
     if form_data.get("rank"):
@@ -445,7 +445,8 @@ def add_unit_query(form, current_user):
 
 
 def replace_list(items, obj, attr, model, db):
-    """Takes a list of items, and object, the attribute of that object that needs to be replaced, the model corresponding the items, and the db
+    """Take a list of items, and object, the attribute of that object that needs to be
+    replaced, the model corresponding the items, and the db.
 
     Sets the objects attribute to the list of items received. DOES NOT SAVE TO DB.
     """
@@ -633,7 +634,7 @@ def find_date_taken(pimage):
 
 def get_officer(department_id, star_no, first_name, last_name):
     """
-    Returns first officer with the given name and badge combo in the department, if they exist
+    Return first officer with the given name and badge combo in the department, if they exist
 
     If star_no is None, just return the first officer with the given first and last name.
     """

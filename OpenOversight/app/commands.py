@@ -20,7 +20,7 @@ from .utils import get_officer, normalize_gender, prompt_yes_no, str_is_true
 @click.command()
 @with_appcontext
 def make_admin_user():
-    "Add confirmed administrator account"
+    """Add confirmed administrator account."""
     while True:
         username = input("Username: ")
         user = User.query.filter_by(username=username).one_or_none()
@@ -269,7 +269,8 @@ def create_officer_from_row(row, department_id):
 
 
 def is_equal(a, b):
-    """exhaustive equality checking, originally to compare a sqlalchemy result object of various types to a csv string
+    """Run an exhaustive equality checking, originally to compare a sqlalchemy
+    result object of various types to a csv string
     Note: Stringifying covers object cases (as in the datetime example below)
     >>> is_equal("1", 1)  # string == int
     True
@@ -630,9 +631,7 @@ def add_job_title(department_id, job_title, is_sworn_officer, order):
 @click.command()
 @with_appcontext
 def use_original_image_for_faces():
-    """
-    Migrate created Faces to use the original image ID instead of the cropped one
-    """
+    """Migrate created Faces to use the original image ID instead of the cropped one."""
     faces = Face.query.all()
     for face in faces:
         face.img_id = face.original_image_id
