@@ -17,7 +17,14 @@ DELETE FROM jobs WHERE department_id = 1;
 Alternatively, if there are no other departments to worry about:
 TRUNCATE jobs, assignments RESTART IDENTITY;
 
-TODO: Add command for cleaning up units.
+Additionally, the now-defunct units can be removed with the following command:
+DELETE FROM unit_types WHERE id IN (
+    SELECT u.id
+    FROM unit_types u
+    LEFT JOIN assignments a
+        ON u.id = a.unit_id
+        WHERE a.id IS NULL
+);
 """
 import bisect
 import logging
