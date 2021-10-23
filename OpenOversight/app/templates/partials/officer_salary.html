@@ -19,15 +19,18 @@
                     {% if salary.overtime_pay > 0 %}
                         {% set total = total + salary.overtime_pay %}
                         <td>{{ '${:,.2f}'.format(salary.overtime_pay) }}</td>
+                        <td>{{ '${:,.2f}'.format(total) }}</td>
                     {% elif salary.overtime_pay < 0 %}
                         <td>(year incomplete)</td>
+                        <td></td>
                     {% else %}
                         <td></td>
+                        <td>{{ '${:,.2f}'.format(total) }}</td>
                     {% endif %}
                 {% else %}
                     <td></td>
+                    <td>{{ '${:,.2f}'.format(total) }}</td>
                 {% endif %}
-                <td>{{ '${:,.2f}'.format(total) }}</td>
 
                 <td>{% if salary.is_fiscal_year: %}FY {% endif %}{{ salary.year }}</td>
 
