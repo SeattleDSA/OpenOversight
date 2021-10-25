@@ -1,4 +1,3 @@
-import logging
 import os
 import re
 import sys
@@ -657,11 +656,11 @@ def list_officer(
         form_data["unit"] = int(unit_arg)
     if uid := request.args.get("unique_internal_identifier"):
         form_data["unique_internal_identifier"] = uid
-    if (races := request.args.get("race")) and all(
+    if (races := request.args.getlist("race")) and all(
         race in [rc[0] for rc in RACE_CHOICES] for race in races
     ):
         form_data["race"] = races
-    if (genders := request.args.get("gender")) and all(
+    if (genders := request.args.getlist("gender")) and all(
         # Every time you complain we add a new gender
         gender in [gc[0] for gc in GENDER_CHOICES]
         for gender in genders
@@ -681,7 +680,7 @@ def list_officer(
         .order_by(Job.order)
         .all()
     ]
-    if (ranks := request.args.get("rank")) and all(
+    if (ranks := request.args.getlist("rank")) and all(
         rank in rank_choices for rank in ranks
     ):
         form_data["rank"] = ranks
