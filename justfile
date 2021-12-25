@@ -27,6 +27,16 @@ down:
 logs service="":
 	{{ DC }} logs -f {{ service }}
 
+# Pull all docker images
+pull:
+    {{ DC }} pull
+
+# Pull and deploy all images
+deploy:
+    -git pull
+    @just pull
+    @just up
+
 # Tear down the database, remove the volumes, recreate the database, and populate it with sample data
 fresh-start:
 	# Tear down existing containers, remove volume
