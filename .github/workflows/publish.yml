@@ -5,7 +5,7 @@ on:
     types: [published]
   push:
     branches:
-      - ci/*
+      - ci-*
 
 env:
   image_name: orcacollective/openoversight
