@@ -17,3 +17,7 @@ jobs:
         run: pip install pre-commit
       - name: Run static checks
         run: just lint
+      - name: Run tests
+        run: |
+          just build
+          just test
