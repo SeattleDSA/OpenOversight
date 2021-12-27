@@ -14,7 +14,7 @@ default:
 
 # Create the .env file from the template
 dotenv:
-    @([ ! -f .env ] && cp env.example .env) || true
+    @([ ! -f .env ] && cp .env.example .env) || true
 
 # Build all containers
 build: dotenv
