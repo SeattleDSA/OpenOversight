@@ -12,8 +12,12 @@ set dotenv-load := false
 default:
     @just -lu
 
+# Create the .env file from the template
+dotenv:
+    @([ ! -f .env ] && cp env.example .env) || true
+
 # Build all containers
-build:
+build: dotenv
 	{{ DC }} build
 
 # Spin up all (or the specified) services
