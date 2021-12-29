@@ -613,9 +613,9 @@ def edit_department(department_id):
 def list_officer(
     department_id,
     page=1,
-    race=[],
-    gender=[],
-    rank=[],
+    race=None,
+    gender=None,
+    rank=None,
     min_age="16",
     max_age="100",
     name=None,
@@ -630,9 +630,9 @@ def list_officer(
         .all()
     )
     form_data = form.data
-    form_data["race"] = race
-    form_data["gender"] = gender
-    form_data["rank"] = rank
+    form_data["race"] = race or []
+    form_data["gender"] = gender or []
+    form_data["rank"] = rank or []
     form_data["min_age"] = min_age
     form_data["max_age"] = max_age
     form_data["name"] = name
