@@ -70,7 +70,7 @@
             <h3 class="panel-title accordion-toggle">Rank</h3>
           </div>
           <div class="collapse {{ form_data | field_in_query("rank") }}" id="filter-rank">
-            <div class="panel-body">
+            <div class="panel-body panel-body-long">
               <div class="form-group checkbox">
                 {% for choice in choices['rank'] %}
                   <label class="form-check">
@@ -86,7 +86,7 @@
             <h3 class="panel-title accordion-toggle">Unit</h3>
           </div>
           <div class="collapse {{ form_data | field_in_query("unit") }}" id="filter-unit">
-            <div class="panel-body">
+            <div class="panel-body panel-body-long">
               <div class="form-group">
                 <div class="form-group checkbox">
                     {% for choice in choices['unit'] %}
