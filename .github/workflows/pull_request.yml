@@ -13,8 +13,6 @@ jobs:
         with:
           python-version: 3.9
       - uses: pre-commit/action@v2.0.3
-        env:
-          SKIP: isort  # Fixme: this isn't working on GHA, "setuptools" not found
         with:
           extra_args: --all-files
 
