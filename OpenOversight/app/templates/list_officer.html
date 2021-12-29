@@ -154,14 +154,16 @@
                 <div class="row">
                   <div class="col-md-6 col-xs-6">
                     <dl>
-                      <dt>Job Title</dt>
+                      <dt>Rank</dt>
                       <dd>{{ officer.job_title()|default('Unknown') }}</dd>
-                      <dt>Race</dt>
-                      <dd>{{ officer.race_label()|default('Unknown')|lower|title }}</dd>
+                      <dt>Unit</dt>
+                      <dd>{{ officer.unit_descrip()|default('Unknown') }}</dd>
                     </dl>
                   </div>
                   <div class="col-md-6 col-xs-6">
                     <dl>
+                      <dt>Race</dt>
+                      <dd>{{ officer.race_label()|default('Unknown')|lower|title }}</dd>
                       <dt>Gender</dt>
                       <dd>{{ officer.gender_label()|default('Unknown') }}</dd>
                       <dt>Number of Photos</dt>

@@ -188,6 +188,12 @@ class Officer(BaseModel):
                 self.assignments_lazy, key=lambda x: x.star_date or date.min
             ).job.job_title
 
+    def unit_descrip(self):
+        if self.assignments_lazy:
+            return max(
+                self.assignments_lazy, key=lambda x: x.star_date or date.min
+            ).unit.descrip
+
     def badge_number(self):
         if self.assignments_lazy:
             return max(
