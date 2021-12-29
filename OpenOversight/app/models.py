@@ -200,6 +200,13 @@ class Officer(BaseModel):
                 self.assignments_lazy, key=lambda x: x.star_date or date.min
             ).star_no
 
+    def currently_on_force(self):
+        if self.assignments_lazy:
+            most_recent = max(
+                self.assignments_lazy, key=lambda x: x.star_date or date.min
+            )
+            return "Yes" if most_recent.resign_date is None else "No"
+
     def __repr__(self):
         if self.unique_internal_identifier:
             return "<Officer ID {}: {} {} {} {} ({})>".format(

@@ -158,6 +158,8 @@
                       <dd>{{ officer.job_title()|default('Unknown') }}</dd>
                       <dt>Unit</dt>
                       <dd>{{ officer.unit_descrip()|default('Unknown') }}</dd>
+                      <dt>Currently on the Force</dt>
+                      <dd>{{ officer.currently_on_force()|default('Uncertain') }}</dd>
                     </dl>
                   </div>
                   <div class="col-md-6 col-xs-6">
