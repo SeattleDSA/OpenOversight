@@ -88,11 +88,13 @@
           <div class="collapse {{ form_data | field_in_query("unit") }}" id="filter-unit">
             <div class="panel-body">
               <div class="form-group">
-                <select class="form-control" name="unit">
-                  {% for choice in choices['unit'] %}
-                  <option id="unit-{{ choice[0] }}" value="{{choice[0]}}" {% if choice[0] == form_data['unit'] %}selected='true'{% endif %}>{{choice[1]}}</option>
-                  {% endfor %}
-                </select>
+                <div class="form-group checkbox">
+                    {% for choice in choices['unit'] %}
+                        <label class="form-check">
+                            <input type="checkbox" class="form-check-input" id="unit-{{ choice[0] }}" name="unit" value="{{ choice[0] }}" {% if choice[0] in form_data['unit'] %}checked="checked" {% endif %}/>{{choice[1]}}
+                        </label>
+                    {% endfor %}
+                </div>
               </div>
             </div>
           </div>
