@@ -34,18 +34,6 @@
           </div>
         </div>
         <div class="panel">
-          <div class="panel-heading{% if not form_data['unique_internal_identifier'] %} collapsed{% endif %}" data-toggle="collapse" data-target="#filter-unique_internal_identifier">
-            <h3 class="panel-title accordion-toggle">Unique ID</h3>
-          </div>
-          <div class="collapse{% if form_data['unique_internal_identifier'] %} in{% endif %}" id="filter-unique_internal_identifier">
-            <div class="panel-body">
-              <div class="form-group">
-                <input type="text" class="form-control" id="unique_internal_identifier" name="unique_internal_identifier" value="{{ form_data['unique_internal_identifier'] or '' }}" />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="panel">
           <div class="panel-heading" data-toggle="collapse" data-target="#filter-race">
             <h3 class="panel-title accordion-toggle">Race</h3>
           </div>
@@ -124,6 +112,18 @@
                   <label>Max</label>
                   <input type="number" class="form-control" id="max_age" name="max_age" value="{{ form_data['max_age'] or 100 }}" />
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-heading{% if not form_data['unique_internal_identifier'] %} collapsed{% endif %}" data-toggle="collapse" data-target="#filter-unique_internal_identifier">
+            <h3 class="panel-title accordion-toggle">Unique ID</h3>
+          </div>
+          <div class="collapse{% if form_data['unique_internal_identifier'] %} in{% endif %}" id="filter-unique_internal_identifier">
+            <div class="panel-body">
+              <div class="form-group">
+                <input type="text" class="form-control" id="unique_internal_identifier" name="unique_internal_identifier" value="{{ form_data['unique_internal_identifier'] or '' }}" />
               </div>
             </div>
           </div>
