@@ -190,9 +190,10 @@ class Officer(BaseModel):
 
     def unit_descrip(self):
         if self.assignments_lazy:
-            return max(
+            unit = max(
                 self.assignments_lazy, key=lambda x: x.star_date or date.min
-            ).unit.descrip
+            ).unit
+            return unit.descrip if unit else None
 
     def badge_number(self):
         if self.assignments_lazy:
