@@ -485,8 +485,8 @@ tr:hover .row-actions {
 }
 
 .filter-sidebar .panel-body-long {
-    height: 20vh;
-    overflow-y: scroll;
+    max-height: 20vh;
+    overflow-y: auto;
 }
 
 .filter-sidebar .panel-heading .accordion-toggle:after {
