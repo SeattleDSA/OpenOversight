@@ -361,6 +361,7 @@ def filter_by_form(form_data, officer_query, department_id=None):
         ]
 
         if "Not Sure" in form_data["unit"]:
+            # Convert "Not Sure" to None, so the resulting SQL query allows NULL values
             form_data["unit"].append(None)
 
     if form_data.get("badge") or unit_ids or job_ids:
