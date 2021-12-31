@@ -767,7 +767,7 @@ def get_dept_ranks(department_id=None, is_sworn_officer=None):
         ranks = Job.query.all()  # Not filtering by is_sworn_officer
         # Prevent duplicate ranks
         rank_list = sorted(
-            set([(rank.id, rank.job_title) for rank in ranks]),
+            set((rank.id, rank.job_title) for rank in ranks),
             key=lambda x: x[1],
         )
 
