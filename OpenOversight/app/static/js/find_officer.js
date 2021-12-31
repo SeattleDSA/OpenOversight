@@ -37,7 +37,7 @@ $(document).ready(function() {
             data: {department_id: dept_id}
         }).done(function(ranks) {
             $('input#rank').replaceWith('<select class="form-control" id="rank" name="rank">');
-            var rank_box = $('select#rank')
+            const rank_box = $('select#rank')
             // Add the null case first
             rank_box.append(
                 $('<option></option>').attr("value", "Not Sure").text("Not Sure")
