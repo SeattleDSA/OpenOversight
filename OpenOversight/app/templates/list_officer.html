@@ -120,7 +120,7 @@
           <div class="panel-heading{% if not form_data['unique_internal_identifier'] %} collapsed{% endif %}" data-toggle="collapse" data-target="#filter-unique_internal_identifier">
             <h3 class="panel-title accordion-toggle">Unique ID</h3>
           </div>
-          <div class="collapse{% if form_data['unique_internal_identifier'] %} in{% endif %}" id="filter-unique_internal_identifier">
+          <div class="collapse {{ form_data | field_in_query("unique_internal_identifier") }}" id="filter-unique_internal_identifier">
             <div class="panel-body">
               <div class="form-group">
                 <input type="text" class="form-control" id="unique_internal_identifier" name="unique_internal_identifier" value="{{ form_data['unique_internal_identifier'] or '' }}" />
