@@ -206,6 +206,7 @@ class Officer(BaseModel):
                 self.assignments_lazy, key=lambda x: x.star_date or date.min
             )
             return "Yes" if most_recent.resign_date is None else "No"
+        return "Uncertain"
 
     def __repr__(self):
         if self.unique_internal_identifier:
