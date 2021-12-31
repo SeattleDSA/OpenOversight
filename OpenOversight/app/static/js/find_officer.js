@@ -43,7 +43,6 @@ $(document).ready(function() {
                 $('<option value="Not Sure">Not Sure</option>')
             );
             for (i = 0; i < ranks.length; i++) {
-                console.log(ranks[i]);
                 rank_box.append(
                     $('<option></option>').attr("value", ranks[i][1]).text(ranks[i][1])
                 );
