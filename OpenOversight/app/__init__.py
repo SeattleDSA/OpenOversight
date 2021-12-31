@@ -105,7 +105,7 @@ def create_app(config_name="default"):
         Determine if a field is specified in the form data, and if so return a Bootstrap
         class which will render the field accordion open.
         """
-        return " in " if form_data[field] else ""
+        return " in " if field in form_data else ""
 
     @app.template_filter("currently_on_force")
     def officer_currently_on_force(assignments):
