@@ -107,7 +107,9 @@ def test_user_can_access_officer_list(mockdata, client, session):
 @pytest.mark.parametrize(
     "filter_func, has_placeholder",
     [
+        # Officer without faces should have placeholder
         (Operators.__invert__, True),
+        # Officer with faces should not have placeholder
         (lambda x: x, False),
     ],
 )
@@ -125,7 +127,7 @@ def test_officer_appropriately_shows_placeholder(
             follow_redirects=True,
         )
 
-        assert (placeholder not in rv.data.decode("utf-8")) ^ has_placeholder
+        assert (placeholder in rv.data.decode("utf-8")) == has_placeholder
 
 
 def test_ac_can_access_admin_on_dept_officer_profile(mockdata, client, session):
