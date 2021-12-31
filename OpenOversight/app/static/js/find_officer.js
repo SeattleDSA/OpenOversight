@@ -40,7 +40,7 @@ $(document).ready(function() {
             const rank_box = $('select#rank')
             // Add the null case first
             rank_box.append(
-                $('<option></option>').attr("value", "Not Sure").text("Not Sure")
+                $('<option value="Not Sure">Not Sure</option>')
             );
             for (i = 0; i < ranks.length; i++) {
                 console.log(ranks[i]);
