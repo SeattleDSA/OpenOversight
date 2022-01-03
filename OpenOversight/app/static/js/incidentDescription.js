@@ -7,7 +7,7 @@ $(document).ready(function() {
         }
         if(description.innerText.length > 300) {
             let originalDescription = description.innerText;
-            description.innerText = description.innerText.substring(0, 300);
+            description.innerText = description.innerText.substring(0, 300) + "…";
             $(`#description-overflow-button_${incidentId}`).on('click', function(event) {
                 description.innerText = originalDescription;
                 $("#description-overflow-row_" + incidentId).hide();
