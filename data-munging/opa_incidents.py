@@ -185,6 +185,7 @@ def match_links(incidents: pd.DataFrame, opas: Dict[str, str]) -> pd.DataFrame:
     matched_opas = matched_opas[["url", "report_number", "id", "officer_ids"]]
     # Rename columns
     matched_opas.columns = ["url", "title", "incident_id", "officer_ids"]
+    matched_opas.loc[:, "title"] = "OPA Case " + matched_opas["title"]
     # Add the common fields
     matched_opas["link_type"] = "Link"
     matched_opas["author"] = "Seattle Office of Police Accountability"
