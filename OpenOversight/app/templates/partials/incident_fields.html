@@ -61,13 +61,14 @@
       <tr>
         <td><strong>Address</strong></td>
         <td>
-          {{ address.street_name }}
+          {% if address.street_name %}
+            {{ address.street_name }}<br/>
+          {% endif %}
           {% if address.cross_street1 and address.cross_street2 %}
             <em>between</em> {{ address.cross_street1 }} <em>and</em> {{ address.cross_street2 }}
           {% elif address.cross_street1 %}
             <em>near</em> {{ address.cross_street1 }}
           {% endif %}
-          <br/>
           {{ address.city }}, {{ address.state }} {% if address.zipcode %} {{ address.zip_code }} {% endif %}
         </td>
       </tr>
