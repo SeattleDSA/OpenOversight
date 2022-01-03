@@ -17,18 +17,14 @@ URL = "https://data.seattle.gov/api/views/99yi-dthu/rows.csv?accessType=DOWNLOAD
 
 
 def _nan(value) -> str:
-    """
-    Create a string based off a value. If the value is NaN, return an empty string.
-    """
+    """Create a string based off a value. If the value is NaN, return an empty string."""
     if value is None or (isinstance(value, (int, float)) and np.isnan(value)):
         return ""
     return value
 
 
 def create_address(series) -> str:
-    """
-    Create a pseudo-address using the precinct, sector, and beat.
-    """
+    """Create a pseudo-address using the precinct, sector, and beat."""
     parts = [
         series["Incident Precinct"],
         series["Incident Sector"],
@@ -74,9 +70,7 @@ def write_output(df: pd.DataFrame, output: Path, name: str) -> None:
 
 
 def match_incidents(ids: pd.DataFrame, nid_mapping: pd.DataFrame) -> pd.DataFrame:
-    """
-    Match the OpenOversight IDs to OPA cases using the Named Employee ID mapping.
-    """
+    """Match the OpenOversight IDs to OPA cases using the Named Employee ID mapping."""
     log.info("Fetching OPA data")
     # Get the records from the Seattle Data website
     response = requests.get(URL)
@@ -178,9 +172,7 @@ def match_incidents(ids: pd.DataFrame, nid_mapping: pd.DataFrame) -> pd.DataFram
 
 
 def match_links(incidents: pd.DataFrame, opas: Dict[str, str]) -> pd.DataFrame:
-    """
-    Match the OPA links to the OpenOversight incidents.
-    """
+    """Match the OPA links to the OpenOversight incidents."""
     log.info("Merging OPA links with incident data")
     # Convert the OPA links JSON to a dataframe
     opa_links = pd.DataFrame(opas.items(), columns=["name", "url"])
