@@ -64,7 +64,7 @@
           {{ address.street_name }}
           {% if address.cross_street1 and address.cross_street2 %}
             <em>between</em> {{ address.cross_street1 }} <em>and</em> {{ address.cross_street2 }}
-          {% else %}
+          {% elif address.cross_street1 %}
             <em>near</em> {{ address.cross_street1 }}
           {% endif %}
           <br/>
