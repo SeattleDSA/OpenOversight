@@ -6,7 +6,6 @@ from pathlib import Path
 from typing import Dict
 
 import click
-import common
 import numpy as np
 import pandas as pd
 import requests
@@ -17,31 +16,45 @@ log = logging.getLogger(__name__)
 URL = "https://data.seattle.gov/api/views/99yi-dthu/rows.csv?accessType=DOWNLOAD"
 
 
-def _nan(value):
+def _nan(value) -> str:
+    """
+    Create a string based off a value. If the value is NaN, return an empty string.
+    """
     if value is None or (isinstance(value, (int, float)) and np.isnan(value)):
         return ""
     return value
 
 
-def create_address(series):
+def create_address(series) -> str:
+    """
+    Create a pseudo-address using the precinct, sector, and beat.
+    """
     parts = [
         series["Incident Precinct"],
         series["Incident Sector"],
         series["Incident Beat"],
     ]
+    # Some of these parts might be missing, only join the parts we have
     parts = [part for part in parts if part]
     return " - ".join(parts)
 
 
 def create_description(series):
+    """
+    Create a description of an incident based off numerous fields. All reports within
+    a case are combined, but each report receives all the information available to it.
+    """
+    # These fields are common across all reports within a case
     desc = f"""\
 Source: {_nan(series.Source)}
 Case Status: {_nan(series["Case Status"])}
 """
     subincident_count = len(series.Allegation)
     for idx in range(subincident_count):
+        # If there's only 1 report, no need to differentiate it
         if subincident_count > 1:
             desc += f"\n==Report {idx + 1}=="
+        # Build a description per report
         desc += f"""
 Badge Number: {series["badge number"][idx]}
 Unique Id: {_nan(series["Unique Id"][idx])}
@@ -61,18 +74,27 @@ def write_output(df: pd.DataFrame, output: Path, name: str) -> None:
 
 
 def match_incidents(ids: pd.DataFrame, nid_mapping: pd.DataFrame) -> pd.DataFrame:
+    """
+    Match the OpenOversight IDs to OPA cases using the Named Employee ID mapping.
+    """
     log.info("Fetching OPA data")
+    # Get the records from the Seattle Data website
     response = requests.get(URL)
     buffer = StringIO(response.text)
+    # This data uses "-" as a null value, add it to the list of acceptable null values
     complaints = pd.read_csv(buffer, na_values="-")
+    # Merge with the employee ID mapping. This produces duplicates, so we drop them.
     mapped = complaints.merge(nid_mapping, how="inner").drop_duplicates()
     log.info("Combining with OO IDs")
+    # Add the OpenOversight IDs to the incident list
     with_ids = mapped.merge(
         ids[["id", "badge number"]],
         how="inner",
         left_on="ID #",
         right_on="badge number",
     )
+    # There are a number of columns in the dataset that we don't need. These are the
+    # ones we care about.
     col_to_keep = [
         "Unique Id",
         "File Number",
@@ -90,6 +112,7 @@ def match_incidents(ids: pd.DataFrame, nid_mapping: pd.DataFrame) -> pd.DataFram
         "badge number",
         "id",
     ]
+    # These columns will be aggregated into lists for each case
     list_cols = {
         "Incident Type",
         "Allegation",
@@ -100,28 +123,40 @@ def match_incidents(ids: pd.DataFrame, nid_mapping: pd.DataFrame) -> pd.DataFram
         "badge number",
         "id",
     }
+    # These columns will be used for aggregation
     col_to_agg = ["File Number", "Occurred Date"]
     log.info("Aggregating by OPA case")
     squished = (
+        # Filter by the columns to keep
         with_ids[col_to_keep]
+        # Group by the aggregation columns
         .groupby(col_to_agg)
+        # Determine the aggregation strategy. It will create lists for all the columns
+        # we want lists for, otherwise the first value will be chosen.
         .agg(
             {
                 col: (list if col in list_cols else "first")
                 for col in (set(col_to_keep) - set(col_to_agg))
             }
         )
+        # Reset the index since aggregation throws them all the indices
         .reset_index()
     )
     log.info("Formatting columns")
+    # Convert the occurred date column to a datetime object
     squished.loc[:, "Occurred Date"] = pd.to_datetime(squished["Occurred Date"])
+    # Create the address
     squished["Address"] = squished.apply(create_address, axis=1)
+    # Create the description
     squished["Description"] = squished.apply(create_description, axis=1)
     log.info("Conforming to OO standard")
+    # Reduce to only the fields we need
     reduced = squished[["File Number", "Occurred Date", "Address", "Description", "id"]]
+    # Convert the officer IDs into a pipe separated list
     reduced["officer_ids"] = (
         reduced["id"].apply(lambda x: [str(y) for y in set(x)]).str.join("|")
     )
+    # Rename the columns to what OpenOversight is expecting
     reduced.columns = [
         "report_number",
         "date",
@@ -130,22 +165,35 @@ def match_incidents(ids: pd.DataFrame, nid_mapping: pd.DataFrame) -> pd.DataFram
         "id",
         "officer_ids",
     ]
+    # Create a pseudo-id, for use with matching links
     reduced["id"] = reduced.apply(lambda r: f"#{r.name}", axis=1)
+    # Add department name and common fields
     reduced["department_name"] = "Seattle Police Department"
     reduced["city"] = "Seattle"
     reduced["state"] = "WA"
+    # Some cases have a 1900-01-01 occurred date. Some of these have over 1000 reports!
+    # We just discard them.
     final = reduced[reduced["date"] > "1950-01-01"]
     return final
 
 
 def match_links(incidents: pd.DataFrame, opas: Dict[str, str]) -> pd.DataFrame:
+    """
+    Match the OPA links to the OpenOversight incidents.
+    """
     log.info("Merging OPA links with incident data")
+    # Convert the OPA links JSON to a dataframe
     opa_links = pd.DataFrame(opas.items(), columns=["name", "url"])
+    # Reduce to the necessary columns
     prep_merge = incidents[["report_number", "id", "officer_ids"]]
+    # Unify the OPA names
     prep_merge["name"] = prep_merge["report_number"].str.replace("OPA", "")
+    # Merge the incidents with the OPA links
     matched_opas = opa_links.merge(prep_merge, how="inner", on="name")
     matched_opas = matched_opas[["url", "report_number", "id", "officer_ids"]]
+    # Rename columns
     matched_opas.columns = ["url", "title", "incident_id", "officer_ids"]
+    # Add the common fields
     matched_opas["link_type"] = "Link"
     matched_opas["author"] = "Seattle Office of Police Accountability"
     matched_opas["id"] = None
