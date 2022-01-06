@@ -21,7 +21,9 @@ RUN apt-get update && \
         nodejs \
         libjpeg62-turbo-dev \
         zlib1g-dev && \
-    apt-get install -y -t stretch-backports libsqlite3-0
+    apt-get install -y -t stretch-backports libsqlite3-0 && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN npm install -g yarn && \
     mkdir /var/www ./node_modules /.cache /.yarn /.mozilla && \
@@ -45,7 +47,11 @@ COPY OpenOversight .
 FROM base as development
 ARG REQUIREMENTS_FILE
 
-RUN apt-get install -y firefox-esr xvfb
+RUN apt-get update && \
+    apt-get install -y firefox-esr xvfb && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 RUN pip3 install -r /usr/src/app/${REQUIREMENTS_FILE}
 
 ENV GECKODRIVER_VERSION="v0.26.0"
@@ -55,12 +61,8 @@ RUN wget ${GECKODRIVER_BASE_URL}/${GECKODRIVER_VERSION}/geckodriver-${GECKODRIVE
 RUN echo "${GECKODRIVER_SHA}  geckodriver-${GECKODRIVER_VERSION}-linux64.tar.gz" | sha256sum --check -
 RUN tar -xzf geckodriver-v0.26.0-linux64.tar.gz -C /usr/bin
 
-RUN apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
 CMD ["scripts/entrypoint.sh"]
 
 # Production Target
 FROM base as production
-RUN apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
 CMD ["scripts/entrypoint.sh"]
