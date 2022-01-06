@@ -188,7 +188,9 @@ def match_links(incidents: pd.DataFrame, opas: Dict[str, str]) -> pd.DataFrame:
     # Reduce to the necessary columns
     prep_merge = incidents[["report_number", "id", "officer_ids"]]
     # Unify the OPA names
-    prep_merge["name"] = prep_merge["report_number"].str.replace("OPA Case ", "").str.replace("OPA", "")
+    prep_merge["name"] = (
+        prep_merge["report_number"].str.replace("OPA Case ", "").str.replace("OPA", "")
+    )
     # Merge the incidents with the OPA links
     matched_opas = opa_links.merge(prep_merge, how="inner", on="name")
     matched_opas = matched_opas[["url", "report_number", "id", "officer_ids"]]
