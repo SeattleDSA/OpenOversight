@@ -1,8 +1,9 @@
-FROM python:3.9-slim
+ARG REQUIREMENTS_FILE=requirements-dev.txt
+
+FROM python:3.9-slim as base
+ARG REQUIREMENTS_FILE
 
 WORKDIR /usr/src/app
-
-ARG REQUIREMENTS_FILE=requirements-dev.txt
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV DEBIAN-FRONTEND noninteractive
@@ -19,12 +20,8 @@ RUN apt-get update && \
         python3-dev \
         nodejs \
         libjpeg62-turbo-dev \
-        zlib1g-dev \
-        firefox-esr \
-        xvfb && \
-    apt-get install -y -t stretch-backports libsqlite3-0 && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+        zlib1g-dev && \
+    apt-get install -y -t stretch-backports libsqlite3-0
 
 RUN npm install -g yarn && \
     mkdir /var/www ./node_modules /.cache /.yarn /.mozilla && \
@@ -32,17 +29,9 @@ RUN npm install -g yarn && \
 COPY yarn.lock /usr/src/app/
 RUN chmod -R 777 /usr/src/app/ /.cache /.yarn
 
-# install geckodriver
-ENV GECKODRIVER_VERSION="v0.26.0"
-ENV GECKODRIVER_SHA=d59ca434d8e41ec1e30dd7707b0c95171dd6d16056fb6db9c978449ad8b93cc0
-ENV GECKODRIVER_BASE_URL="https://github.com/mozilla/geckodriver/releases/download"
-RUN wget ${GECKODRIVER_BASE_URL}/${GECKODRIVER_VERSION}/geckodriver-${GECKODRIVER_VERSION}-linux64.tar.gz
-RUN echo "${GECKODRIVER_SHA}  geckodriver-${GECKODRIVER_VERSION}-linux64.tar.gz" | sha256sum --check -
-RUN tar -xzf geckodriver-v0.26.0-linux64.tar.gz -C /usr/bin
-
 # Always add the prod req because the dev reqs depend on it for deduplication
 COPY ${REQUIREMENTS_FILE} requirements.txt /usr/src/app/
-RUN pip3 install -r ${REQUIREMENTS_FILE} -r requirements.txt
+RUN pip3 install -r requirements.txt
 
 COPY package.json /usr/src/app/
 RUN yarn
@@ -52,4 +41,26 @@ WORKDIR /usr/src/app/OpenOversight
 
 COPY OpenOversight .
 
+# Development Target
+FROM base as development
+ARG REQUIREMENTS_FILE
+
+RUN apt-get install -y firefox-esr xvfb
+RUN pip3 install -r /usr/src/app/${REQUIREMENTS_FILE}
+
+ENV GECKODRIVER_VERSION="v0.26.0"
+ENV GECKODRIVER_SHA=d59ca434d8e41ec1e30dd7707b0c95171dd6d16056fb6db9c978449ad8b93cc0
+ENV GECKODRIVER_BASE_URL="https://github.com/mozilla/geckodriver/releases/download"
+RUN wget ${GECKODRIVER_BASE_URL}/${GECKODRIVER_VERSION}/geckodriver-${GECKODRIVER_VERSION}-linux64.tar.gz
+RUN echo "${GECKODRIVER_SHA}  geckodriver-${GECKODRIVER_VERSION}-linux64.tar.gz" | sha256sum --check -
+RUN tar -xzf geckodriver-v0.26.0-linux64.tar.gz -C /usr/bin
+
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+CMD ["scripts/entrypoint.sh"]
+
+# Production Target
+FROM base as production
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 CMD ["scripts/entrypoint.sh"]
