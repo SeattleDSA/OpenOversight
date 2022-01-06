@@ -40,32 +40,38 @@ def create_description(series):
     Create a description of an incident based off numerous fields. All reports within
     a case are combined, but each report receives all the information available to it.
     """
-    # These fields are common across all reports within a case
-    desc = f"""\
-Source: {_nan(series.Source)}
-Case Status: {_nan(series["Case Status"])}
-"""
+    desc = ""
     subincident_count = len(series.Allegation)
     for idx in range(subincident_count):
         # If there's only 1 report, no need to differentiate it
-        if subincident_count > 1:
-            desc += f"\n==Report {idx + 1}=="
+        count = f"{idx + 1} " if subincident_count > 1 else " "
+        allegation = _nan(series["Allegation"][idx])
+        if allegation:
+            count += "— "
+        desc += f"<h4>Allegation {count}{allegation}</h4>"
         # Build a description per report
-        desc += f"""
-Badge Number: {series["badge number"][idx]}
-Unique Id: {_nan(series["Unique Id"][idx])}
-Allegation: {_nan(series["Allegation"][idx])}
-Incident Type: {_nan(series["Incident Type"][idx])}
-Disposition: {_nan(series["Disposition"][idx])}
-Finding: {_nan(series["Finding"][idx])}
-Discipline: {_nan(series["Discipline"][idx])}
+        desc += f"""\
+<b>Name:</b> {series["name"][idx]}
+<b>Badge #:</b> {series["badge number"][idx]}
+<b>Disposition:</b> {_nan(series["Disposition"][idx])}
+<b>Discipline:</b> {_nan(series["Discipline"][idx])}
+<b>Incident Type:</b> {_nan(series["Incident Type"][idx])}
+<b>Finding:</b> {_nan(series["Finding"][idx])}
+
+"""
+
+    # These fields are common across all reports within a case
+    desc += f"""\
+<b>Source:</b> {_nan(series.Source)}
+<b>Case Status:</b> {_nan(series["Case Status"])}
+<a href="https://sea-scanners.wiki/police/opa-case-legend" target="_blank" rel="noopener noreferrer"><i>Legend</i></a>
 """
     return desc.strip()
 
 
 def write_output(df: pd.DataFrame, output: Path, name: str) -> None:
     path = output.parent / f"{output.stem}__{name}.csv"
-    log.info(f"Writing {len(df)} missing records to {path}")
+    log.info(f"Writing {len(df)} records to {path}")
     df.to_csv(path, index=False)
 
 
@@ -82,7 +88,7 @@ def match_incidents(ids: pd.DataFrame, nid_mapping: pd.DataFrame) -> pd.DataFram
     log.info("Combining with OO IDs")
     # Add the OpenOversight IDs to the incident list
     with_ids = mapped.merge(
-        ids[["id", "badge number"]],
+        ids[["id", "badge number", "name"]],
         how="inner",
         left_on="ID #",
         right_on="badge number",
@@ -105,6 +111,7 @@ def match_incidents(ids: pd.DataFrame, nid_mapping: pd.DataFrame) -> pd.DataFram
         "Finding",
         "badge number",
         "id",
+        "name",
     ]
     # These columns will be aggregated into lists for each case
     list_cols = {
@@ -116,6 +123,7 @@ def match_incidents(ids: pd.DataFrame, nid_mapping: pd.DataFrame) -> pd.DataFram
         "Unique Id",
         "badge number",
         "id",
+        "name",
     }
     # These columns will be used for aggregation
     col_to_agg = ["File Number", "Occurred Date"]
@@ -159,6 +167,7 @@ def match_incidents(ids: pd.DataFrame, nid_mapping: pd.DataFrame) -> pd.DataFram
         "id",
         "officer_ids",
     ]
+    reduced.loc[:, "report_number"] = "OPA Case " + reduced["report_number"]
     # Create a pseudo-id, for use with matching links
     reduced["id"] = reduced.apply(lambda r: f"#{r.name}", axis=1)
     # Add department name and common fields
@@ -184,7 +193,7 @@ def match_links(incidents: pd.DataFrame, opas: Dict[str, str]) -> pd.DataFrame:
     matched_opas = opa_links.merge(prep_merge, how="inner", on="name")
     matched_opas = matched_opas[["url", "report_number", "id", "officer_ids"]]
     # Rename columns
-    matched_opas.columns = ["url", "title", "incident_id", "officer_ids"]
+    matched_opas.columns = ["url", "title", "incident_ids", "officer_ids"]
     matched_opas.loc[:, "title"] = "OPA Case " + matched_opas["title"]
     # Add the common fields
     matched_opas["link_type"] = "Link"
@@ -196,6 +205,8 @@ def match_links(incidents: pd.DataFrame, opas: Dict[str, str]) -> pd.DataFrame:
 def main(id_path: Path, mapping_path: Path, opa_link_path: Path, output: Path):
     log.info("Starting import")
     ids = pd.read_csv(id_path)
+    # Combine name into single field
+    ids["name"] = ids["first name"] + " " + ids["last name"]
     named_employee_mapping = pd.read_csv(mapping_path)
     opa_links = json.loads(opa_link_path.read_text())
     incidents = match_incidents(ids, named_employee_mapping)
