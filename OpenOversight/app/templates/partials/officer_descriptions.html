@@ -5,7 +5,7 @@
       <li class="list-group-item">
         <em>{{ description.date_updated.strftime('%b %d, %Y')}}</em> <br />
         {% for paragraph in description.text_contents.split('\n') %}
-          {{ paragraph }} <br/>
+          {{ paragraph | safe }} <br/>
         {% endfor %}
         <br />
         <em>{{ description.creator.username }} </em>

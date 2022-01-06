@@ -49,7 +49,7 @@
         <h4>Description</h4>
         <br>
         {% for paragraph in incident.description.split('\n') %}
-          {{ paragraph }}<br/>
+          {{ paragraph | safe }}<br/>
         {% endfor %}
         </p>
       </div>

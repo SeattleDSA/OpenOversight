@@ -43,7 +43,7 @@
       <td><strong>Description</strong></td>
       <td class="incident-description" id="incident-description_{{incident.id}}" data-incident='{{incident.id | tojson}}'>
         {% for paragraph in incident.description.split('\n') %}
-          {{ paragraph }}<br/>
+          {{ paragraph | safe }}<br/>
         {% endfor %}
       </td>
     </tr>
