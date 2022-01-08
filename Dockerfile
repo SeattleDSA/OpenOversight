@@ -46,10 +46,6 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Install additional development requirements
-COPY requirements-dev.txt /usr/src/app/
-RUN pip3 install -r /usr/src/app/requirements-dev.txt
-
 # Install Geckodriver components
 ENV GECKODRIVER_VERSION="v0.26.0"
 ENV GECKODRIVER_SHA=d59ca434d8e41ec1e30dd7707b0c95171dd6d16056fb6db9c978449ad8b93cc0
@@ -57,6 +53,10 @@ ENV GECKODRIVER_BASE_URL="https://github.com/mozilla/geckodriver/releases/downlo
 RUN wget ${GECKODRIVER_BASE_URL}/${GECKODRIVER_VERSION}/geckodriver-${GECKODRIVER_VERSION}-linux64.tar.gz && \
     echo "${GECKODRIVER_SHA}  geckodriver-${GECKODRIVER_VERSION}-linux64.tar.gz" | sha256sum --check - && \
     tar -xzf geckodriver-v0.26.0-linux64.tar.gz -C /usr/bin
+
+# Install additional development requirements
+COPY requirements-dev.txt /usr/src/app/
+RUN pip3 install -r /usr/src/app/requirements-dev.txt
 
 COPY OpenOversight .
 
