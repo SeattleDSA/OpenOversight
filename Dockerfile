@@ -38,8 +38,6 @@ COPY create_db.py /usr/src/app/
 
 WORKDIR /usr/src/app/OpenOversight
 
-COPY OpenOversight .
-
 # Development Target
 FROM base as development
 
@@ -60,8 +58,11 @@ RUN wget ${GECKODRIVER_BASE_URL}/${GECKODRIVER_VERSION}/geckodriver-${GECKODRIVE
     echo "${GECKODRIVER_SHA}  geckodriver-${GECKODRIVER_VERSION}-linux64.tar.gz" | sha256sum --check - && \
     tar -xzf geckodriver-v0.26.0-linux64.tar.gz -C /usr/bin
 
+COPY OpenOversight .
+
 CMD ["scripts/entrypoint.sh"]
 
 # Production Target
 FROM base as production
+COPY OpenOversight .
 CMD ["scripts/entrypoint.sh"]
