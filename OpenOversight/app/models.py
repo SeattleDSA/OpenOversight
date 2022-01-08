@@ -511,7 +511,8 @@ class User(UserMixin, BaseModel):
     classifications = db.relationship("Image", backref="users")
     tags = db.relationship("Face", backref="users")
 
-    def _jwt_encode(self, secret, payload, expiration):
+    def _jwt_encode(self, payload, expiration):
+        secret = current_app.config["SECRET_KEY"]
         header = {"alg": "HS512"}
 
         now = int(time.time())
@@ -520,7 +521,8 @@ class User(UserMixin, BaseModel):
 
         return jwt.encode(header, payload, secret)
 
-    def _jwt_decode(self, secret, token):
+    def _jwt_decode(self, token):
+        secret = current_app.config["SECRET_KEY"]
         token = jwt.decode(token, secret)
         token.validate()
         return token
@@ -549,13 +551,12 @@ class User(UserMixin, BaseModel):
         return check_password_hash(self.password_hash, password)
 
     def generate_confirmation_token(self, expiration=3600):
-        key = current_app.config["SECRET_KEY"]
         payload = {"confirm": self.id}
-        return self._jwt_encode(key, payload, expiration).decode("utf-8")
+        return self._jwt_encode(payload, expiration).decode("utf-8")
 
     def confirm(self, token):
         try:
-            data = self._jwt_decode(current_app.config["SECRET_KEY"], token)
+            data = self._jwt_decode(token)
         except JoseError as e:
             current_app.logger.warning("failed to decrypt token: %s", e)
             return False
@@ -570,13 +571,12 @@ class User(UserMixin, BaseModel):
         return True
 
     def generate_reset_token(self, expiration=3600):
-        key = current_app.config["SECRET_KEY"]
         payload = {"reset": self.id}
-        return self._jwt_encode(key, payload, expiration).decode("utf-8")
+        return self._jwt_encode(payload, expiration).decode("utf-8")
 
     def reset_password(self, token, new_password):
         try:
-            data = self._jwt_decode(current_app.config["SECRET_KEY"], token)
+            data = self._jwt_decode(token)
         except JoseError:
             return False
         if data.get("reset") != self.id:
@@ -586,13 +586,12 @@ class User(UserMixin, BaseModel):
         return True
 
     def generate_email_change_token(self, new_email, expiration=3600):
-        key = current_app.config["SECRET_KEY"]
         payload = {"change_email": self.id, "new_email": new_email}
-        return self._jwt_encode(key, payload, expiration).decode("utf-8")
+        return self._jwt_encode(payload, expiration).decode("utf-8")
 
     def change_email(self, token):
         try:
-            data = self._jwt_decode(current_app.config["SECRET_KEY"], token)
+            data = self._jwt_decode(token)
         except JoseError:
             return False
         if data.get("change_email") != self.id:
