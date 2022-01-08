@@ -51,6 +51,10 @@
                     <td>{{ officer.employment_date }}</td>
                 </tr>
                 <tr>
+                    <td><b>Number of known incidents</b></td>
+                    <td>{{ officer.incidents | length }}</td>
+                </tr>
+                <tr>
                     <td><b>Currently on the force</b></td>
                     <td>{{ officer.currently_on_force() }}</td>
                 </tr>
