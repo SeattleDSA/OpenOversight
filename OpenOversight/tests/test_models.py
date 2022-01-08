@@ -167,9 +167,7 @@ def test_expired_reset_token(mockdata):
     assert user.verify_password("bacon") is True
 
 
-def test_valid_email_change_token(
-    old_email, new_email, result, expected_email, mockdata
-):
+def test_valid_email_change_token(mockdata):
     user = User(email="brian@example.com", password="bacon")
     db.session.add(user)
     db.session.commit()
