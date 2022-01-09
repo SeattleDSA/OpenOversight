@@ -82,6 +82,7 @@ def create_app(config_name="default"):
         :param error: response error message, if JSON
         :param template: template response
         """
+
         def _handler_method(e):
             if request.accept_mimetypes.best == "application/json":
                 return jsonify(error=error), code
