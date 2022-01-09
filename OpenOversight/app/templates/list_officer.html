@@ -160,6 +160,10 @@
                       <dd>{{ officer.unit_descrip()|default('Unknown') }}</dd>
                       <dt>Currently on the Force</dt>
                       <dd>{{ officer.currently_on_force() }}</dd>
+                      {% if officer.incidents %}
+                      <dt>Known incidents</dt>
+                      <dd>{{ officer.incidents | length }}</dd>
+                      {% endif %}
                     </dl>
                   </div>
                   <div class="col-md-6 col-xs-6">
