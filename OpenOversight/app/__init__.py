@@ -82,7 +82,6 @@ def create_app(config_name="default"):
         :param error: response error message, if JSON
         :param template: template response
         """
-
         def _handler_method(e):
             if request.accept_mimetypes.best == "application/json":
                 return jsonify(error=error), code
@@ -98,6 +97,7 @@ def create_app(config_name="default"):
         (500, "Internal Server Error", "500.html"),
     ]
     for code, error, template in error_handlers:
+        # Pass generated errorhandler function to @app.errorhandler decorator
         app.errorhandler(code)(create_errorhandler(code, error, template))
 
     # create jinja2 filter for titles with multiple capitals
