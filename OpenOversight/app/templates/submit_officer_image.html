@@ -39,11 +39,19 @@
       acceptedFiles: "image/png, image/jpeg, image/gif, image/jpg",
       maxFiles: 50,
       headers: {
+        'Accept': 'application/json',
         'X-CSRF-TOKEN': csrf_token
       },
       init: function() {
-        this.on("error", function(file, responseText) {
-          file.previewTemplate.appendChild(document.createTextNode(responseText));
+        this.on("error", function(file, response, test) {
+          if (typeof(response) == "object") {
+            response = response.error;
+          }
+          if (response.startsWith("<!DOCTYPE")) {
+            // Catch any remaining HTML error pages
+            response = "Upload failed.";
+          }
+          file.previewTemplate.appendChild(document.createTextNode(response));
         });
       }
     });
