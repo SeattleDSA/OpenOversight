@@ -82,7 +82,6 @@ test *pytestargs:
 
 # Run all of the tests, including the acceptance ones
 test-acceptance *pytestargs:
-    @just test
     just run --no-deps web pytest -n 0 -m "acceptance" {{ pytestargs }}
 
 # Back up the postgres data using loomchild/volume-backup
