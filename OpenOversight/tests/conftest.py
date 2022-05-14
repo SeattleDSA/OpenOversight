@@ -61,7 +61,7 @@ def pick_date(seed: bytes = None, start_year=2000, end_year=2020):
     from struct import unpack
 
     def bytes_to_float(b):
-        return float(unpack("L", sha256(b).digest()[:8])[0]) / 2 ** 64
+        return float(unpack("L", sha256(b).digest()[:8])[0]) / 2**64
 
     if seed is None:
         seed = str(uuid.uuid4()).encode("utf-8")
