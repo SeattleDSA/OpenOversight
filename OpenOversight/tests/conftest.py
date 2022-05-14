@@ -667,7 +667,9 @@ def client(app, request):
 def browser(app, request):
     # start server without werkzeug auto-refresh
     # https://stackoverflow.com/questions/38087283/
-    threading.Thread(target=app.run, kwargs={"debug": False}).start()
+    thread = threading.Thread(
+        target=app.run, daemon=True, kwargs={"debug": False}
+    ).start()
     # give the server a few seconds to ensure it is up
     time.sleep(10)
 
