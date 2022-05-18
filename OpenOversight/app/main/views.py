@@ -1391,7 +1391,9 @@ class IncidentApi(ModelView):
 
         if report_number := request.args.get("report_number"):
             form.report_number.data = report_number
-            incidents = incidents.filter_by(report_number=report_number)
+            incidents = incidents.filter(
+                Incident.report_number.contains(report_number.strip())
+            )
 
         if occurred_before := request.args.get("occurred_before"):
             before_date = datetime.datetime.strptime(occurred_before, "%Y-%m-%d").date()
