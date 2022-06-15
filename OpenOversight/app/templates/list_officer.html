@@ -74,7 +74,7 @@
             <div class="panel-body panel-body-long">
               <select name="rank" class="select2-multi-search" multiple="multiple">
                 {% for choice in choices['rank'] %}
-                <option value="{{ choice[0] }}"{% if choice[0] in form_data['rank'] %} selected="selected"{% endif %}>{{ choice[1] }}</option>
+                <option value="{{ choice[0] }}"{% if choice[0] in form_data['rank'] %} selected="selected" {% endif %}>{{ choice[1] }}</option>
                 {% endfor %}
               </select>
             </div>
