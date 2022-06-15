@@ -133,10 +133,7 @@ def generate_officer():
 
 def build_assignment(officer: Officer, units: List[Optional[Unit]], jobs: Job):
     unit = random.choice(units)
-    if unit:
-        unit_id = unit.id
-    else:
-        unit_id = None
+    unit_id = unit.id if unit else None
     return models.Assignment(
         star_no=pick_star(),
         job_id=random.choice(jobs).id,
