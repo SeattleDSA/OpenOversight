@@ -201,8 +201,8 @@ def test_click_to_read_more_displays_full_description(mockdata, browser):
     button = browser.find_element("id", "description-overflow-button_" + incident_id)
     button.click()
 
-    description_text = browser.find_element("id", 
-        "incident-description_" + incident_id
+    description_text = browser.find_element(
+        "id", "incident-description_" + incident_id
     ).text.strip()
     assert len(description_text) == len(orig_descrip)
     assert description_text == orig_descrip
