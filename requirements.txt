@@ -19,4 +19,9 @@ python-dateutil==2.8.2
 python-dotenv==0.20.0
 SQLAlchemy==1.4.21
 us==1.0
+# FIXME
+# Werkzeug 2.1.3 does not have parse_rule available, remove this when
+# other dependencies can play nice
+# https://stackoverflow.com/q/73105877/3277713
+werkzeug==2.1.2
 WTForms<3.0.0
