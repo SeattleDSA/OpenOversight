@@ -1,0 +1,50 @@
+name: Publish docs to github.io
+
+on:
+  push:
+    branches:
+      - main
+      - docs/*
+
+jobs:
+  publish-docs:
+    name: Publish developer docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup just
+        uses: extractions/setup-just@v1
+
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.10
+
+      - name: Generate docs
+        run: |
+            just install
+            just make-docs
+            mv docs/_build/html /tmp/gh-pages
+
+      - name: Check out gh-pages branch
+        uses: actions/checkout@v3
+        with:
+          ref: gh-pages
+
+        uses: actions/checkout@v2
+
+      - name: Deploy docs
+        uses: peaceiris/actions-gh-pages@v3.7.3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: /tmp/gh-pages
+          force_orphan: true
+
+      - name: Checkout branch again to enable cleaning
+        if: always()
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref_name }}
+
