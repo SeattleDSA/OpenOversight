@@ -33,8 +33,6 @@ jobs:
         with:
           ref: gh-pages
 
-        uses: actions/checkout@v2
-
       - name: Deploy docs
         uses: peaceiris/actions-gh-pages@v3.7.3
         with:
