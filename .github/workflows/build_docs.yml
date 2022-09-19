@@ -26,23 +26,10 @@ jobs:
         run: |
             just install
             just make-docs
-            mv docs/_build/html /tmp/gh-pages
-
-      - name: Check out gh-pages branch
-        uses: actions/checkout@v3
-        with:
-          ref: gh-pages
 
       - name: Deploy docs
         uses: peaceiris/actions-gh-pages@v3.7.3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: /tmp/gh-pages
+          publish_dir: ./docs/_build/html
           force_orphan: true
-
-      - name: Checkout branch again to enable cleaning
-        if: always()
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.ref_name }}
-
