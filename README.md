@@ -5,7 +5,7 @@
 [![Latest GHCR.io image version](https://ghcr-badge.herokuapp.com/orcacollective/openoversight/latest_tag?color=%230078D4)](https://ghcr.io/orcacollective/openoversight)
 [![Latest GHCR.io image size](https://ghcr-badge.herokuapp.com/orcacollective/openoversight/size?color=%230078D4)](https://ghcr.io/orcacollective/openoversight)
 
-# OpenOversight (Seattle Fork) 
+# OpenOversight (Seattle Fork)
 
 OpenOversight is a Lucy Parsons Labs project to improve law enforcement accountability through public and crowdsourced data. We maintain a database of officer demographic information and provide digital galleries of photographs. This is done to help people identify law enforcement officers for filing complaints and in order for the public to see work-related information about law enforcement officers that interact with the public.
 
