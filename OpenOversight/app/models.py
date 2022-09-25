@@ -635,7 +635,7 @@ class User(UserMixin, BaseModel):
     @property
     def is_active(self):
         """Override UserMixin.is_active to prevent disabled users from logging in."""
-        return not (self.is_disabled)
+        return not self.is_disabled
 
     def __repr__(self):
         return "<User %r>" % self.username
