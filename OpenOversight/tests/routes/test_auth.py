@@ -15,7 +15,12 @@ from OpenOversight.app.auth.forms import (
 )
 from OpenOversight.app.models import User
 
-from .route_helpers import login_disabled_user, login_unconfirmed_user, login_user
+from .route_helpers import (
+    login_disabled_user,
+    login_modified_disabled_user,
+    login_unconfirmed_user,
+    login_user,
+)
 
 
 @pytest.mark.parametrize(
@@ -377,28 +382,30 @@ def test_unconfirmed_user_redirected_to_confirm_account(mockdata, client, sessio
         assert b"Please Confirm Your Account" in rv.data
 
 
-def test_disabled_user_cannot_login_or_visit_pages_requiring_auth(
-    mockdata, client, session
-):
-    # All disabled user testing must be done in the same test to avoid
-    # flakiness since is_disabled is being updated
+def test_disabled_user_cannot_login(mockdata, client, session):
     with current_app.test_request_context():
-        user = User.query.filter_by(email="may@example.org").one()
-
         rv = login_disabled_user(client)
         assert b"User has been disabled" in rv.data
 
+
+def test_disabled_user_cannot_visit_pages_requiring_auth(mockdata, client, session):
+    # Don't use modified_disabled_user for anything else! Since we run tests
+    # concurrently and this test modifies the user, there's a chance that
+    # you'll get unexpected results if both tests run simultaneously.
+    with current_app.test_request_context():
         # Temporarily enable account for login
+        user = User.query.filter_by(email="sam@example.org").one()
         user.is_disabled = False
         session.add(user)
 
-        rv = login_disabled_user(client)
-        assert b"/user/may" in rv.data
+        rv = login_modified_disabled_user(client)
+        assert b"/user/sam" in rv.data
 
         # Disable account again and check that login_required redirects user correctly
         user.is_disabled = True
         session.add(user)
 
+        # Logged in disabled user cannot access pages requiring auth
         rv = client.get("/auth/logout")
         assert rv.status_code == 302
 

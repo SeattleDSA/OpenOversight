@@ -27,6 +27,12 @@ def login_disabled_user(client):
     return rv
 
 
+def login_modified_disabled_user(client):
+    form = LoginForm(email="sam@example.org", password="the yam", remember_me=True)
+    rv = client.post(url_for("auth.login"), data=form.data, follow_redirects=True)
+    return rv
+
+
 def login_admin(client):
 
     form = LoginForm(email=ADMIN_EMAIL, password=ADMIN_PASSWORD, remember_me=True)
