@@ -14,6 +14,7 @@ import pytest
 from faker import Faker
 from flask import current_app, g
 from PIL import Image as Pimage
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.firefox.webdriver import WebDriver as Firefox
 from xvfbwrapper import Xvfb
@@ -696,8 +697,11 @@ def browser(app, request, server):
     vdisplay = Xvfb()
     vdisplay.start()
 
+    options = FirefoxOptions()
+    options.headless = True
+
     service = FirefoxService(log_path="/tmp/geckodriver.log")
-    driver = Firefox(service=service)
+    driver = Firefox(options=options, service=service)
 
     yield driver
 
