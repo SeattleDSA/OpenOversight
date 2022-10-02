@@ -1,3 +1,4 @@
+import datetime
 import re
 import time
 from datetime import date
@@ -58,6 +59,24 @@ class Department(BaseModel):
             "short_name": self.short_name,
             "unique_internal_identifier_label": self.unique_internal_identifier_label,
         }
+
+    def latest_incident_date(self) -> datetime.date:
+        return (
+            db.session.query(func.max(Incident.date))
+            .filter(Incident.department_id == self.id)
+            .scalar()
+        )
+
+    def latest_officer_update(self) -> datetime.date:
+        officers_updated = (
+            db.session.query(func.max(Officer.date_updated))
+            .filter(Incident.department_id == self.id)
+            .scalar()
+        )
+        if officers_updated:
+            # date_updated is a datetime so convert it to date, if found
+            officers_updated = officers_updated.date()
+        return officers_updated
 
 
 class Job(BaseModel):
@@ -129,6 +148,8 @@ class Officer(BaseModel):
     unique_internal_identifier = db.Column(
         db.String(50), index=True, unique=True, nullable=True
     )
+    date_created = db.Column(db.DateTime)
+    date_updated = db.Column(db.DateTime)
 
     links = db.relationship(
         "Link", secondary=officer_links, backref=db.backref("officers", lazy=True)
