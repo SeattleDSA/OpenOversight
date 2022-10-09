@@ -47,6 +47,9 @@ from .models import (
 # Ensure the file is read/write by the creator only
 SAVED_UMASK = os.umask(0o077)
 
+# Cropped officer face image size
+THUMBNAIL_SIZE = 1000, 1000
+
 
 # Call JPEG patch function
 add_jpeg_patch()
@@ -576,15 +579,18 @@ def crop_image(image, crop_data=None, department_id=None):
 
     pimage = Pimage.open(image_buf)
 
-    SIZE = 1000, 1000
-    if not crop_data and pimage.size[0] < SIZE[0] and pimage.size[1] < SIZE[1]:
+    if (
+        not crop_data
+        and pimage.size[0] < THUMBNAIL_SIZE[0]
+        and pimage.size[1] < THUMBNAIL_SIZE[1]
+    ):
         return image
 
     # Crops image to face and resizes to bounding box if still too big
     if crop_data:
         pimage = pimage.crop(crop_data)
-    if pimage.size[0] > SIZE[0] or pimage.size[1] > SIZE[1]:
-        pimage.thumbnail(SIZE)
+    if pimage.size[0] > THUMBNAIL_SIZE[0] or pimage.size[1] > THUMBNAIL_SIZE[1]:
+        pimage.thumbnail(THUMBNAIL_SIZE)
 
     # JPEG doesn't support alpha channel, convert to RGB
     if pimage.mode in ("RGBA", "P"):
