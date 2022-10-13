@@ -203,20 +203,11 @@ def test_csv_import_new(csvfile):
     assert Officer.query.count() == n_created
     assert n_updated == 0
 
-    officer = get_officer_from_csv(csvfile)
-    assert officer.date_created == officer.date_updated
-    assert officer.date_created is not None
-
 
 def test_csv_import_update(csvfile):
     n_existing = Officer.query.count()
 
     assert n_existing > 0
-
-    # Find an officer in the csvfile and save create/update dates
-    officer = get_officer_from_csv(csvfile)
-    old_date_created = officer.date_created
-    old_date_updated = officer.date_updated
 
     # Load officers
     n_created, n_updated = bulk_add_officers([csvfile], standalone_mode=False)
@@ -224,11 +215,6 @@ def test_csv_import_update(csvfile):
     assert n_created == 0
     assert n_updated == 0
     assert Officer.query.count() == n_existing
-
-    # All officers should have been updated
-    officer = get_officer_from_csv(csvfile)
-    assert officer.date_created == old_date_created
-    assert officer.date_updated != old_date_updated
 
 
 def test_csv_import_idempotence(csvfile):
@@ -1274,9 +1260,3 @@ def test_create_officer_from_row_adds_new_officer_and_normalizes_gender(app, ses
         assert lookup_officer is not None
         # Was the gender properly normalized?
         assert lookup_officer.gender == "F"
-
-
-def get_officer_from_csv(csvfile):
-    df = pd.read_csv(csvfile)
-    uid = df.loc[0, "unique_internal_identifier"]
-    return Officer.query.filter_by(unique_internal_identifier=uid).one()

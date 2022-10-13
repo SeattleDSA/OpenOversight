@@ -171,7 +171,7 @@ def set_field_from_row(row, obj, attribute, allow_blank=True, fieldname=None):
         setattr(obj, attribute, val)
 
 
-def update_officer_from_row(row, officer, now=None, update_static_fields=False):
+def update_officer_from_row(row, officer, update_static_fields=False):
     def update_officer_field(fieldname):
         if fieldname not in row:
             return
@@ -246,14 +246,10 @@ def update_officer_from_row(row, officer, now=None, update_static_fields=False):
     process_assignment(row, officer, compare=True)
     process_salary(row, officer, compare=True)
 
-    officer.date_updated = now
 
-
-def create_officer_from_row(row, department_id, now=None):
+def create_officer_from_row(row, department_id):
     officer = Officer()
     officer.department_id = department_id
-    officer.date_created = now
-    officer.date_updated = now
 
     set_field_from_row(row, officer, "last_name", allow_blank=False)
     set_field_from_row(row, officer, "first_name", allow_blank=False)
@@ -459,7 +455,6 @@ def bulk_add_officers(filename, no_create, update_by_name, update_static_fields)
     """Add or update officers from a CSV file."""
 
     encoding = "utf-8"
-    now = datetime.now()
 
     # handles unicode errors that can occur when the file was made in Excel
     with open(filename, "r") as f:
@@ -531,9 +526,9 @@ def bulk_add_officers(filename, no_create, update_by_name, update_static_fields)
                 ).one_or_none()
 
             if officer:
-                update_officer_from_row(row, officer, now, update_static_fields)
+                update_officer_from_row(row, officer, update_static_fields)
             elif not no_create:
-                create_officer_from_row(row, department_id, now)
+                create_officer_from_row(row, department_id)
 
         ImportLog.print_logs()
         if current_app.config["ENV"] == "testing" or prompt_yes_no(

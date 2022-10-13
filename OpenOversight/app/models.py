@@ -5,6 +5,8 @@ from datetime import date
 from decimal import Decimal
 
 from authlib.jose import JoseError, JsonWebToken
+from cachetools import TTLCache, cached
+from cachetools.keys import hashkey
 from flask import current_app
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
@@ -40,6 +42,27 @@ officer_incidents = db.Table(
 )
 
 
+date_updated_cache = TTLCache(maxsize=1024, ttl=60)
+
+
+def _date_updated_cache_key(update_type: str):
+    """Return a key function to calculate the cache key for Department
+    `latest_*_update` methods using the department id and a given update type.
+
+    Department.id is used instead of a Department obj because the default Python
+    __hash__ is unique per obj instance, meaning multiple instances of the same
+    department will have different hashes.
+
+    Update type is used in the hash to differentiate between the (currently) three
+    update types we compute per department.
+    """
+
+    def _cache_key(dept: "Department"):
+        return hashkey(dept.id, update_type)
+
+    return _cache_key
+
+
 class Department(BaseModel):
     __tablename__ = "departments"
     id = db.Column(db.Integer, primary_key=True)
@@ -60,23 +83,34 @@ class Department(BaseModel):
             "unique_internal_identifier_label": self.unique_internal_identifier_label,
         }
 
-    def latest_incident_date(self) -> datetime.date:
-        return (
-            db.session.query(func.max(Incident.date))
+    @cached(cache=date_updated_cache, key=_date_updated_cache_key("incident"))
+    def latest_incident_update(self) -> datetime.date:
+        incident_updated = (
+            db.session.query(func.max(Incident.date_updated))
             .filter(Incident.department_id == self.id)
             .scalar()
         )
+        return incident_updated.date() if incident_updated else None
 
+    @cached(cache=date_updated_cache, key=_date_updated_cache_key("officer"))
     def latest_officer_update(self) -> datetime.date:
-        officers_updated = (
+        officer_updated = (
             db.session.query(func.max(Officer.date_updated))
-            .filter(Incident.department_id == self.id)
+            .filter(Officer.department_id == self.id)
             .scalar()
         )
-        if officers_updated:
-            # date_updated is a datetime so convert it to date, if found
-            officers_updated = officers_updated.date()
-        return officers_updated
+        return officer_updated.date() if officer_updated else None
+
+    @cached(cache=date_updated_cache, key=_date_updated_cache_key("assignment"))
+    def latest_assignment_update(self) -> datetime.date:
+        assignment_updated = (
+            db.session.query(func.max(Assignment.date_updated))
+            .join(Officer)
+            .filter(Assignment.officer_id == Officer.id)
+            .filter(Officer.department_id == self.id)
+            .scalar()
+        )
+        return assignment_updated.date() if assignment_updated else None
 
 
 class Job(BaseModel):
@@ -148,8 +182,10 @@ class Officer(BaseModel):
     unique_internal_identifier = db.Column(
         db.String(50), index=True, unique=True, nullable=True
     )
-    date_created = db.Column(db.DateTime)
-    date_updated = db.Column(db.DateTime)
+    date_created = db.Column(db.DateTime, default=func.now())
+    date_updated = db.Column(
+        db.DateTime, default=func.now(), onupdate=func.now(), index=True
+    )
 
     links = db.relationship(
         "Link", secondary=officer_links, backref=db.backref("officers", lazy=True)
@@ -301,6 +337,10 @@ class Assignment(BaseModel):
     unit = db.relationship("Unit")
     star_date = db.Column(db.Date, index=True, unique=False, nullable=True)
     resign_date = db.Column(db.Date, index=True, unique=False, nullable=True)
+    date_created = db.Column(db.DateTime, default=func.now())
+    date_updated = db.Column(
+        db.DateTime, default=func.now(), onupdate=func.now(), index=True
+    )
 
     def __repr__(self):
         return "<Assignment: ID {} : {}>".format(self.officer_id, self.star_no)
@@ -536,6 +576,10 @@ class Incident(BaseModel):
     last_updated_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     last_updated_by = db.relationship(
         "User", backref="incidents_updated", lazy=True, foreign_keys=[last_updated_id]
+    )
+    date_created = db.Column(db.DateTime, default=func.now())
+    date_updated = db.Column(
+        db.DateTime, default=func.now(), onupdate=func.now(), index=True
     )
 
 

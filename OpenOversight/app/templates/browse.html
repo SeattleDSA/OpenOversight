@@ -22,9 +22,12 @@
        </h2>
 
        <div>
-         <i class="dept-{{department.id}}">Officers Updated: {{department.latest_officer_update()}}</i>
+         <i class="dept-{{department.id}}">Officers Updated: {{department.latest_officer_update() | default("No data", true) }}</i>
+         <br>
+         <i class="dept-{{department.id}}">Assignments Updated: {{department.latest_assignment_update() | default("No data", true) }}</i>
          {% if department.incidents %}
-           <br><i class="dept-{{department.id}}">Latest Incident: {{department.latest_incident_date()}}</i>
+           <br>
+           <i class="dept-{{department.id}}">Incidents Updated: {{department.latest_incident_update() | default("No data", true) }}</i>
          {% endif %}
        </div>
 
