@@ -42,7 +42,7 @@ officer_incidents = db.Table(
 )
 
 
-date_updated_cache = TTLCache(maxsize=1024, ttl=60)
+date_updated_cache = TTLCache(maxsize=1024, ttl=12 * 60 * 60)
 
 
 def _date_updated_cache_key(update_type: str):
