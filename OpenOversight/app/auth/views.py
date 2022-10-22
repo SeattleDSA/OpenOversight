@@ -72,9 +72,8 @@ def login():
         if user is not None and user.verify_password(form.password.data):
             if user.is_active:
                 login_user(user, form.remember_me.data)
-                return redirect(
-                    validate_redirect_url(session.get("next")) or url_for("main.index")
-                )
+                next_url = validate_redirect_url(session.get("next"))
+                return redirect(next_url or url_for("main.index"))
             else:
                 flash("User has been disabled.")
         else:

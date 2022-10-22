@@ -344,6 +344,7 @@ def test_filter_by_form_filter_unit(
     "url,is_valid",
     [
         ("/images/1", True),
+        ("/officer/1?with_params=true", True),
         ("//google.com", False),
         ("http://google.com", False),
         ("https://google.com/?q=oo", False),
