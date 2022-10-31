@@ -58,6 +58,7 @@
             </tbody>
           </table>
 
+          {% if current_user and not current_user.is_anonymous %}
           <h3>Set as featured tag</h3>
           <p>
             <form action="{{ url_for('main.set_featured_tag', tag_id=face.id) }}" method="post">
@@ -67,6 +68,7 @@
               </button>
             </form>
           </p>
+          {% endif %}
 
           {% if current_user.is_administrator
             or (current_user.is_area_coordinator and current_user.ac_department_id == face.image.department_id) %}

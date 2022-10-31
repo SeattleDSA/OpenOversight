@@ -316,6 +316,11 @@ def test_user_can_set_featured_tag(mockdata, client, session):
         assert b"Successfully set this tag as featured" in rv.data
 
 
+def test_can_set_featured_tag_login_required(mockdata, client, session):
+    rv = client.post("/tag/set_featured/1", follow_redirects=False)
+    assert rv.status_code == 302
+
+
 @patch(
     "OpenOversight.app.utils.serve_image",
     MagicMock(return_value=PROJECT_ROOT + "/app/static/images/test_cop1.png"),
