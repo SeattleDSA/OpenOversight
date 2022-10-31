@@ -26,6 +26,5 @@ jobs:
         run: |
           just build
           just test
-          just up
+          just up minio
           just test-acceptance
-          just down
