@@ -12,8 +12,7 @@ $(document).ready(function () {
     const frameTop = img.data("top")
 
     if ([frameWidth, frameHeight, frameLeft, frameTop].every(isNumeric)) {
-        img.on("load", function () {
-
+        img.one("imageLoaded", function () {
             // To prevent hi-res images from taking over the entire page, the image is being shown
             // in a responsive element. This means we need to compute the tag frame dimensions
             // using percentages so it will scale if the page size changes.
@@ -36,5 +35,14 @@ $(document).ready(function () {
             // Make sure wrapper does not expand larger than image
             $(".face-wrap").css("maxWidth", img[0].naturalWidth + "px")
         });
+
+        img.on("load", function () {
+            img.trigger("imageLoaded")
+        })
+
+        // Handle case where image was cached and is loaded before handler is registered
+        if (img[0].complete) {
+            img.trigger("imageLoaded")
+        }
     }
 });
