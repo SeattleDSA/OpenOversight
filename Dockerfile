@@ -13,6 +13,7 @@ RUN apt-get update && \
     apt-get update && \
     apt-get install -y \
         gcc \
+        g++ \
         libpq-dev \
         python3-dev \
         nodejs \
