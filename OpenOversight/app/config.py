@@ -9,6 +9,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class BaseConfig(object):
+    ENVIRONMENT = os.environ.get("ENVIRONMENT", "")
     # DB SETUP
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
