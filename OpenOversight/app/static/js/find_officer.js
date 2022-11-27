@@ -18,50 +18,51 @@ function buildSelect(name, data_url, dept_id) {
 }
 
 $(document).ready(function() {
-    let navListItems = $('ul.setup-panel li a');
-    let navButtons = $('.setup-content a');
-    let allWells = $('.setup-content');
+    const navListItems = $('ul.setup-panel li a');
+    const navButtons = $('.setup-content a');
+    const allWells = $('.setup-content');
 
     // If a navigation bar item is clicked and is not disabled, activate the selected panel
     navListItems.click(function(e) {
-        e.preventDefault();
-        let $target = $($(this).attr('href'));
-        let $item = $(this).parent();
+        const $target = $($(this).attr('href'));
+        const $item = $(this).parent();
 
         if (!$item.hasClass('disabled')) {
             navListItems.parent().removeClass('active');
             $item.addClass('active');
-            allWells.hide();
-            $target.show();
+            allWells.addClass("hidden");
+            $target.removeClass("hidden");
         }
+
+        return false;
     });
 
     // When next or previous button is clicked, simulate clicking on navigation bar item
     navButtons.click(function(e) {
-        let stepId = $(this).attr('href');
+        const stepId = $(this).attr('href');
         // Locate the nav bar item for this step
-        let $navItem = $('ul.setup-panel li a[href="' + stepId + '"]');
+        const $navItem = $('ul.setup-panel li a[href="' + stepId + '"]');
 
         $navItem.parent().removeClass('disabled');
         $navItem.trigger('click');
 
-        e.preventDefault();
+        return false;
     })
 
     // Load the department's units and ranks when a new dept is selected
     $('#dept').on('change', function(e) {
-        let deptId = $('#dept').val();
-        let ranksUrl = $('#step-1').data('ranks-url');
-        let unitsUrl = $('#step-1').data('units-url');
+        const deptId = $('#dept').val();
+        const ranksUrl = $('#step-1').data('ranks-url');
+        const unitsUrl = $('#step-1').data('units-url');
         buildSelect('rank', ranksUrl, deptId);
         buildSelect('unit', unitsUrl, deptId);
 
         const deptsWithUii = $('#current-uii').data('departments');
-        let targetDept = deptsWithUii.find(function(element) {
+        const targetDept = deptsWithUii.find(function(element) {
             return element.id == deptId
         });
 
-        let deptUiidLabel= targetDept.unique_internal_identifier_label
+        const deptUiidLabel = targetDept.unique_internal_identifier_label
         if (deptUiidLabel) {
             $('#current-uii').text(deptUiidLabel);
         } else {
@@ -88,8 +89,18 @@ $(document).ready(function() {
        $('#show-img-div').show();
     });
 
+    // Advance to the next screen on "Enter" keypress. Implementing this
+    // manually because the default Enter behavior varies across browsers
+    // https://stackoverflow.com/a/925387
+    $("form input").on("keypress", function (e) {
+        if (e.keyCode == 13) {
+            $(".setup-content:not(.hidden) .next").trigger("click");
+            return false;
+        }
+    });
+
     // Initialize controls
-    allWells.hide();
+    allWells.addClass("hidden");
     $('#dept').trigger('change');
     $('ul.setup-panel li.active a').trigger('click');
 });
