@@ -1,7 +1,10 @@
 import logging
+from io import StringIO
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
+import requests
 
 
 log = logging.getLogger(__name__)
@@ -21,3 +24,18 @@ def write_files_with_missing(
     log.info(f"Writing {len(df)} output records to {output}")
     df.to_csv(output, index=False)
     log.info("Finished")
+
+
+def nan_sting(value) -> str:
+    """Create a string based off a value. If the value is NaN, return an empty string."""
+    if value is None or (isinstance(value, (int, float)) and np.isnan(value)):
+        return ""
+    return value
+
+
+def read_from_seattle_data_url(url: str, **kwargs) -> pd.DataFrame:
+    """Read a CSV from the Seattle Data website"""
+    log.info(f"Reading {url}")
+    response = requests.get(url)
+    buffer = StringIO(response.text)
+    return pd.read_csv(buffer, **kwargs)
