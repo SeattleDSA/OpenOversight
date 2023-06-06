@@ -26,12 +26,8 @@ def get_ccs_links() -> pd.DataFrame:
     df["date"] = pd.to_datetime(df["Posted Date"])
     # Pull out the case number from the "Case #" link column
     # this takes the form `YYYYOPA-XXXX (<link>)`
-    df["case"] = df["Case #"].str.split(" ", expand=True).str[0]
-    df["link"] = df["Case #"].str.split(" ").str[1]
-    # The CSV is a single column, so we'll rename it
-    df.columns = ["link"]
-    # The CSV has a header row, but it's not a header. Remove it.
-    df = df[df.link != "Link"]
+    df["case"] = df["Case #"].str.split(" ").str[0]
+    df["link"] = df["Case #"].str.split(" ").str[-1].str.replace("[()]", "", regex=True)
     return df
 
 
@@ -216,12 +212,19 @@ def match_links(incidents: pd.DataFrame, opas: Dict[str, str]) -> pd.DataFrame:
     return matched_opas
 
 
+def join_links(df: pd.DataFrame, ccs: pd.DataFrame) -> pd.DataFrame:
+    """Attach the OPA links to the incidents."""
+    # Combine the IAPro data with the CCS incident links
+    xdf = df.merge(ccs, left_on=["FILE NUMBER"], right_on=["case"])
+
+    return xdf
+
+
 def main(iapro_path: Path, output: Path):
     log.info("Starting import")
     ids = pd.read_csv(iapro_path)
-    opa_links = read_from_seattle_data_url(CCS_URL)
-    incidents = match_incidents(ids, named_employee_mapping)
-    links = match_links(incidents, opa_links)
+    ccs = get_ccs_links()
+    incidents = join_links(ids, ccs)
     write_output(incidents, output, "incidents")
     write_output(links, output, "links")
 
