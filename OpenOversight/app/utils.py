@@ -614,7 +614,7 @@ def upload_image_to_s3_and_store_in_db(image_buf, user_id, department_id=None):
 
     # PIL expects format name to be JPEG, not JPG
     # https://pillow.readthedocs.io/en/stable/handbook/image-file-formats.html
-    if image_type.lower() == "jpg":
+    if image_type == "jpg":
         image_type = "jpeg"
 
     # Scrub EXIF data, extracting date taken data if it exists
