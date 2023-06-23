@@ -608,7 +608,7 @@ def upload_image_to_s3_and_store_in_db(image_buf, user_id, department_id=None):
     but we also have to get the date for the image before we scrub it.
     """
     kind = image_match(image_buf)
-    image_type = kind.extension if kind else None
+    image_type = kind.extension.lower() if kind else None
     if image_type not in current_app.config["ALLOWED_EXTENSIONS"]:
         raise ValueError("Attempted to pass invalid data type: {}".format(image_type))
 
