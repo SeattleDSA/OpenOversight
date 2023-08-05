@@ -606,8 +606,8 @@ class Allegation(BaseModel):
     case = db.Column(db.String(255), nullable=True)
     source = db.Column(db.String(255), nullable=True)
     # fks
-    incident_id = db.Column(db.Integer, db.ForeignKey('incident.id'), nullable=False)
-    officer_id = db.Column(db.Integer, db.ForeignKey('officer.id'), nullable= True)
+    incident_id = db.Column(db.Integer, db.ForeignKey('incidents.id'), nullable=False)
+    officer_id = db.Column(db.Integer, db.ForeignKey('officers.id'), nullable= True)
 
 
 
