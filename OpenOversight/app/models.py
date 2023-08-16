@@ -596,11 +596,13 @@ class Allegation(BaseModel):
         db.DateTime, default=func.now(), onupdate=func.now(), index=True
     )
     # details
-    allegation = db.Column(db.String(255), nullable=True)
+    allegation = db.Column(db.String(255), nullable=False)
+    directive = db.Column(db.Text(), nullable=True)
     disposition = db.Column(db.String(255), nullable=True)
     discipline = db.Column(db.String(255), nullable=True)
     finding = db.Column(db.String(255), nullable=True)
     officer_name = db.Column(db.String(255), nullable=True)
+    officer_title_at_time_of_incident = db.Column(db.String(255), nullable=True)
     star_no = db.Column(db.String(120), index=True, unique=False, nullable=True)
     incident_type = db.Column(db.String(255), nullable=True)
     case = db.Column(db.String(255), nullable=True)

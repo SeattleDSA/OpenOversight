@@ -1,8 +1,8 @@
-"""add-allegations
+"""add_allegations
 
-Revision ID: 171ee9412815
+Revision ID: 051675f22efd
 Revises: 8fc4d110de2c
-Create Date: 2023-08-05 00:14:32.513077
+Create Date: 2023-08-16 22:56:56.089583
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '171ee9412815'
+revision = '051675f22efd'
 down_revision = '8fc4d110de2c'
 branch_labels = None
 depends_on = None
@@ -22,11 +22,13 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('date_created', sa.DateTime(), nullable=True),
     sa.Column('date_updated', sa.DateTime(), nullable=True),
-    sa.Column('allegation', sa.String(length=255), nullable=True),
+    sa.Column('allegation', sa.String(length=255), nullable=False),
+    sa.Column('directive', sa.Text(), nullable=True),
     sa.Column('disposition', sa.String(length=255), nullable=True),
     sa.Column('discipline', sa.String(length=255), nullable=True),
     sa.Column('finding', sa.String(length=255), nullable=True),
     sa.Column('officer_name', sa.String(length=255), nullable=True),
+    sa.Column('officer_title_at_time_of_incident', sa.String(length=255), nullable=True),
     sa.Column('star_no', sa.String(length=120), nullable=True),
     sa.Column('incident_type', sa.String(length=255), nullable=True),
     sa.Column('case', sa.String(length=255), nullable=True),
