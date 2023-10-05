@@ -202,6 +202,7 @@ class Officer(BaseModel):
     salaries = db.relationship(
         "Salary", back_populates="officer", order_by="Salary.year.desc()"
     )
+    allegations = db.relationship("Allegation", backref="officer", lazy=True)
 
     __table_args__ = (
         CheckConstraint("gender in ('M', 'F', 'Other')", name="gender_options"),
@@ -570,6 +571,7 @@ class Incident(BaseModel):
         lazy="subquery",
         backref=db.backref("incidents"),
     )
+    allegations = db.relationship("Allegation", backref="incident", lazy="subquery")
     department_id = db.Column(db.Integer, db.ForeignKey("departments.id"))
     department = db.relationship("Department", backref="incidents", lazy=True)
     creator_id = db.Column(db.Integer, db.ForeignKey("users.id"))
@@ -584,6 +586,32 @@ class Incident(BaseModel):
     date_updated = db.Column(
         db.DateTime, default=func.now(), onupdate=func.now(), index=True
     )
+
+
+class Allegation(BaseModel):
+    __tablename__ = "allegations"
+    # db meta
+    id = db.Column(db.Integer, primary_key=True)
+    date_created = db.Column(db.DateTime, default=func.now())
+    date_updated = db.Column(
+        db.DateTime, default=func.now(), onupdate=func.now(), index=True
+    )
+    # details
+    allegation = db.Column(db.String(255), nullable=False)
+    directive = db.Column(db.Text(), nullable=True)
+    disposition = db.Column(db.String(255), nullable=True)
+    discipline = db.Column(db.String(255), nullable=True)
+    finding = db.Column(db.String(255), nullable=True)
+    officer_name = db.Column(db.String(255), nullable=True)
+    officer_title_at_time_of_incident = db.Column(db.String(255), nullable=True)
+    star_no = db.Column(db.String(120), index=True, unique=False, nullable=True)
+    incident_type = db.Column(db.String(255), nullable=True)
+    case = db.Column(db.String(255), nullable=True)
+    source = db.Column(db.String(255), nullable=True)
+    # fks
+    incident_id = db.Column(db.Integer, db.ForeignKey('incidents.id'), nullable=False)
+    officer_id = db.Column(db.Integer, db.ForeignKey('officers.id'), nullable= True)
+
 
 
 class User(UserMixin, BaseModel):
