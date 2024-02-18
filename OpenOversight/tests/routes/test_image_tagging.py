@@ -16,6 +16,7 @@ from OpenOversight.app.models.database import (
     Job,
     Officer,
     User,
+    db,
 )
 from OpenOversight.app.utils.constants import ENCODING_UTF_8
 from OpenOversight.tests.conftest import AC_DEPT
@@ -366,7 +367,7 @@ def test_user_is_redirected_to_correct_department_after_tagging(
             ),
             follow_redirects=True,
         )
-        department = Department.query.get(department_id)
+        department = db.session.get(Department, department_id)
 
         assert rv.status_code == HTTPStatus.OK
         assert department.name in rv.data.decode(ENCODING_UTF_8)
