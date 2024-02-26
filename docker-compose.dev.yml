@@ -51,8 +51,11 @@ services:
       SQLALCHEMY_WARN_20: 1
     volumes:
       - ./OpenOversight:/usr/src/app/OpenOversight
+      - oo-assets:/usr/src/app/OpenOversight/app/static/dist
     ports:
       - "3000:3000"
 
 volumes:
   minio:
+  # Prevent bind mount from overwriting assets: https://stackoverflow.com/q/57065750
+  oo-assets:

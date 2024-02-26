@@ -3,7 +3,7 @@ FROM node:16 AS nodejs
 WORKDIR /usr/src/app/
 COPY package.json yarn.lock ./
 RUN yarn install
-COPY OpenOversight/app/static OpenOversight/app/static
+COPY OpenOversight/app/static/ OpenOversight/app/static/
 RUN yarn build
 
 
@@ -42,10 +42,10 @@ RUN if [ "$IS_PROD" = "true" ]; then \
 # Setup application
 COPY create_db.py .
 COPY OpenOversight OpenOversight
-COPY --from=nodejs /usr/src/app/OpenOversight/app/static/dist OpenOversight/app/static/dist
+COPY --from=nodejs /usr/src/app/OpenOversight/app/static/dist/ OpenOversight/app/static/dist/
 
 CMD if [ "$IS_PROD" = "true" ]; then \
         gunicorn -w 4 -b 0.0.0.0:3000 OpenOversight.app:app; \
     else \
-        flask --app OpenOversight.app:app run --host=0.0.0.0 --port=3000; \
+        flask run --host=0.0.0.0 --port=3000; \
     fi
