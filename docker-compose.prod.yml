@@ -4,7 +4,8 @@ services:
   web:
     build:
       context: .
-      target: production
+      args:
+        ENV: production
     environment:
       ENV: production
     volumes:

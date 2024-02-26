@@ -1,61 +1,50 @@
-FROM python:3.12.1-slim-bullseye as base
-
-WORKDIR /usr/src/app
-
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV DEBIAN-FRONTEND noninteractive
-ENV PYTHONUNBUFFERED=1
-ENV PIP_NO_CACHE_DIR=1
-ENV NODE_MAJOR=16
-
-RUN apt-get update && \
-    apt-get install -y ca-certificates curl gnupg && \
-    mkdir -p /etc/apt/keyrings && \
-    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg && \
-    echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" > /etc/apt/sources.list.d/nodesource.list && \
-    apt-get update && \
-    apt-get install -y \
-        gcc \
-        libpq-dev \
-        python3-dev \
-        nodejs \
-        libjpeg62-turbo-dev \
-        libsqlite3-0 \
-        zlib1g-dev && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN npm install -g yarn && \
-    mkdir /var/www ./node_modules /.cache /.yarn /.mozilla && \
-    touch /usr/src/app/yarn-error.log
-COPY yarn.lock /usr/src/app/
-RUN chmod -R 777 /usr/src/app/ /.cache /.yarn
-
-# Add prod requirements to base image
-COPY requirements.txt /usr/src/app/
-RUN pip3 install -r requirements.txt
-
-COPY package.json /usr/src/app/
-RUN yarn
-COPY create_db.py /usr/src/app/
-
+# node layer to build static assets
+FROM node:16 AS nodejs
 WORKDIR /usr/src/app/
-COPY OpenOversight OpenOversight
+COPY package.json yarn.lock ./
+RUN yarn install
+COPY OpenOversight/app/static OpenOversight/app/static
+RUN yarn build
 
-# Development Target
-FROM base as development
 
-RUN apt-get update && \
-    apt-get install -y firefox-esr xvfb && \
+FROM python:3.12.1-slim-bullseye as base
+WORKDIR /usr/src/app
+ENV DEBIAN-FRONTEND noninteractive
+ENV PIP_NO_CACHE_DIR=1
+ENV POETRY_NO_INTERACTION=1
+ENV POETRY_VIRTUALENVS_CREATE=0
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Install packages depending on ENV arg from docker-compose
+ARG ENV
+ARG BASE_PACKAGES="gcc libpq-dev libjpeg62-turbo-dev libsqlite3-0 zlib1g-dev"
+ARG DEV_PACKAGES="firefox-esr xvfb"
+RUN PACKAGES_TO_INSTALL="$BASE_PACKAGES" && \
+    if [ "$ENV" = "development" ]; then \
+        PACKAGES_TO_INSTALL="$PACKAGES_TO_INSTALL $DEV_PACKAGES"; \
+    fi && \
+    apt-get update && \
+    apt-get install -y -qq --no-install-recommends $PACKAGES_TO_INSTALL && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Install additional development requirements
-COPY requirements-dev.txt /usr/src/app/
-RUN pip3 install -r /usr/src/app/requirements-dev.txt
+# Add runtime dependencies to base image
+RUN pip3 install poetry~=1.8.0
+COPY pyproject.toml poetry.lock ./
+RUN if [ "$ENV" = "development" ]; then \
+        poetry install --no-root; \
+    else \
+        poetry install --only main --no-root; \
+    fi
 
-CMD ["OpenOversight/scripts/entrypoint.sh"]
+# Setup application
+COPY create_db.py .
+COPY OpenOversight OpenOversight
+COPY --from=nodejs /usr/src/app/OpenOversight/app/static/dist OpenOversight/app/static/dist
 
-# Production Target
-FROM base as production
-CMD ["OpenOversight/scripts/entrypoint.sh"]
+CMD if [ "$ENV" = "development" ]; then \
+        flask --app OpenOversight.app:app run --host=0.0.0.0 --port=3000; \
+    else \
+        gunicorn -w 4 -b 0.0.0.0:3000 OpenOversight.app:app; \
+    fi

@@ -13,6 +13,9 @@ services:
       - postgres:/var/lib/postgresql/data
 
   web:
+    build:
+      args:
+        ENV: ${ENV:-development}
     restart: always
     depends_on:
       - postgres
@@ -29,7 +32,6 @@ services:
     secrets:
       - source: service-account-key
         target: /usr/src/app/service_account_key.json
-    command: OpenOversight/scripts/entrypoint.sh
 
 volumes:
   postgres:
