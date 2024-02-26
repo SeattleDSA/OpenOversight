@@ -85,6 +85,10 @@ import +args:
 lint:
     pre-commit run --all-files
 
+# Generate poetry lockfile
+lock:
+    just run --no-deps web poetry lock
+
 # Run Flask-Migrate tasks in the web container
 db +migrateargs:
     just run --no-deps web flask db {{ migrateargs }}

@@ -22,6 +22,10 @@ To run the project locally:
    4. `Commit changes?`: `y`
 3. Run `just up` and visit http://localhost:3000!
 
+To re-generate the poetry lock file (if you need to update dependencies in pyproject.toml):
+1. Run `just lock`
+2. Include the modified `poetry.lock` file in your commit
+
 
 ## Deployment
 

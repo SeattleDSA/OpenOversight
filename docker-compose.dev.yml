@@ -50,6 +50,8 @@ services:
       FLASK_DEBUG: 1
       SQLALCHEMY_WARN_20: 1
     volumes:
+      - ./poetry.lock:/usr/src/app/poetry.lock
+      - ./pyproject.toml:/usr/src/app/pyproject.toml
       - ./OpenOversight:/usr/src/app/OpenOversight
       - oo-assets:/usr/src/app/OpenOversight/app/static/dist
     ports:
