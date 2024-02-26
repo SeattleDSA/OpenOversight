@@ -5,7 +5,7 @@ services:
     build:
       context: .
       args:
-        ENV: production
+        IS_PROD: "true"
     environment:
       ENV: production
     volumes:

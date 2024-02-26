@@ -8,20 +8,21 @@ RUN yarn build
 
 
 FROM python:3.12.1-slim-bullseye as base
-WORKDIR /usr/src/app
-ENV DEBIAN-FRONTEND noninteractive
+ARG IS_PROD
+ENV DEBIAN_FRONTEND noninteractive
 ENV PIP_NO_CACHE_DIR=1
 ENV POETRY_NO_INTERACTION=1
 ENV POETRY_VIRTUALENVS_CREATE=0
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
+WORKDIR /usr/src/app
 
 # Install packages depending on ENV arg from docker-compose
-ARG ENV
 ARG BASE_PACKAGES="gcc libpq-dev libjpeg62-turbo-dev libsqlite3-0 zlib1g-dev"
 ARG DEV_PACKAGES="firefox-esr xvfb"
-RUN PACKAGES_TO_INSTALL="$BASE_PACKAGES" && \
-    if [ "$ENV" = "development" ]; then \
+RUN if [ "$IS_PROD" = "true" ]; then \
+        PACKAGES_TO_INSTALL="$BASE_PACKAGES"; \
+    else \
         PACKAGES_TO_INSTALL="$PACKAGES_TO_INSTALL $DEV_PACKAGES"; \
     fi && \
     apt-get update && \
@@ -32,10 +33,10 @@ RUN PACKAGES_TO_INSTALL="$BASE_PACKAGES" && \
 # Add runtime dependencies to base image
 RUN pip3 install poetry~=1.8.0
 COPY pyproject.toml poetry.lock ./
-RUN if [ "$ENV" = "development" ]; then \
-        poetry install --no-root; \
-    else \
+RUN if [ "$IS_PROD" = "true" ]; then \
         poetry install --only main --no-root; \
+    else \
+        poetry install --no-root; \
     fi
 
 # Setup application
@@ -43,8 +44,8 @@ COPY create_db.py .
 COPY OpenOversight OpenOversight
 COPY --from=nodejs /usr/src/app/OpenOversight/app/static/dist OpenOversight/app/static/dist
 
-CMD if [ "$ENV" = "development" ]; then \
-        flask --app OpenOversight.app:app run --host=0.0.0.0 --port=3000; \
-    else \
+CMD if [ "$IS_PROD" = "true" ]; then \
         gunicorn -w 4 -b 0.0.0.0:3000 OpenOversight.app:app; \
+    else \
+        flask --app OpenOversight.app:app run --host=0.0.0.0 --port=3000; \
     fi
