@@ -19,7 +19,7 @@ WORKDIR /usr/src/app
 
 # Install packages depending on ENV arg from docker-compose
 ARG BASE_PACKAGES="gcc libpq-dev libjpeg62-turbo-dev libsqlite3-0 zlib1g-dev"
-ARG DEV_PACKAGES="firefox-esr xvfb"
+ARG DEV_PACKAGES="firefox-esr"
 RUN if [ "$IS_PROD" = "true" ]; then \
         PACKAGES_TO_INSTALL="$BASE_PACKAGES"; \
     else \

@@ -20,7 +20,6 @@ from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.firefox.webdriver import WebDriver as Firefox
 from sqlalchemy.orm import scoped_session, sessionmaker
 from webdriver_manager.firefox import GeckoDriverManager
-from xvfbwrapper import Xvfb
 
 from OpenOversight.app import create_app
 from OpenOversight.app.models.database import (
@@ -901,12 +900,10 @@ def server(app, server_port):
 
 @pytest.fixture(scope="session")
 def browser(app, server):
-    # start headless webdriver
-    vdisplay = Xvfb()
-    vdisplay.start()
-
     options = FirefoxOptions()
-    options.headless = True
+    options.add_argument("--headless")
+    options.add_argument("--width=1024")
+    options.add_argument("--height=768")
 
     service = FirefoxService(
         executable_path=GeckoDriverManager().install(), log_path="/tmp/geckodriver.log"
@@ -917,4 +914,3 @@ def browser(app, server):
 
     # shutdown headless webdriver
     driver.quit()
-    vdisplay.stop()

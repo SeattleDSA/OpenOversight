@@ -3222,17 +3222,7 @@ files = [
 SQLAlchemy = ">=0.7.10"
 WTForms = ">=1.0.5"
 
-[[package]]
-name = "xvfbwrapper"
-version = "0.2.9"
-description = "run headless display inside X virtual framebuffer (Xvfb)"
-optional = false
-python-versions = "*"
-files = [
-    {file = "xvfbwrapper-0.2.9.tar.gz", hash = "sha256:bcf4ae571941b40254faf7a73432dfc119ad21ce688f1fdec533067037ecfc24"},
-]
-
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "81c20fc287ac179d96829c6fb523140a29ccb6376f157a3cf40397857b4bd75e"
+content-hash = "2fea6410b13cb2bb11d56ec81921797d32580e4bc86fc98fe833d48816601c96"
