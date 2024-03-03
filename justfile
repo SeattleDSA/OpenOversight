@@ -107,8 +107,8 @@ backup location:
 
 # Build the docs using sphinx
 make-docs:
-    sphinx-build -b html docs/ docs/_build/html
+    poetry run sphinx-build -b html docs/ docs/_build/html
 
 # Build & serve the docs using a live server
 serve-docs:
-    sphinx-autobuild docs/ docs/_build/html
+    poetry run sphinx-autobuild docs/ docs/_build/html
