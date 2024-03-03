@@ -30,8 +30,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          # Build the slimmer production target
-          target: production
+          build-args: IS_PROD=true
           tags: |
             ghcr.io/${{ env.image_name }}:${{ github.sha }}
             ghcr.io/${{ env.image_name }}:${{ github.ref_name }}

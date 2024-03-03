@@ -24,9 +24,9 @@ service-account-key:
     @([ ! -f service_account_key.json ] && touch service_account_key.json) || true
 
 
-# Install dev dependencies into currently activated  python environment
+# Install dev dependencies using poetry
 install:
-    pip3 install -r requirements-dev.txt
+    poetry install
 
 # Build all containers
 build: dotenv service-account-key
