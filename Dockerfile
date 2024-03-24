@@ -23,7 +23,7 @@ ARG DEV_PACKAGES="firefox-esr"
 RUN if [ "$IS_PROD" = "true" ]; then \
         PACKAGES_TO_INSTALL="$BASE_PACKAGES"; \
     else \
-        PACKAGES_TO_INSTALL="$PACKAGES_TO_INSTALL $DEV_PACKAGES"; \
+        PACKAGES_TO_INSTALL="$BASE_PACKAGES $DEV_PACKAGES"; \
     fi && \
     apt-get update && \
     apt-get install -y -qq --no-install-recommends $PACKAGES_TO_INSTALL && \
