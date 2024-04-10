@@ -1903,6 +1903,7 @@ def upload(department_id: int, officer_id: Optional[int] = None):
         )
     except ValueError:
         # Raised if MIME type not allowed
+        current_app.logger.exception("Invalid data type!")
         return jsonify(error="Invalid data type!"), HTTPStatus.UNSUPPORTED_MEDIA_TYPE
 
     if image:
