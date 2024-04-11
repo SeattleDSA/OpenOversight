@@ -97,19 +97,10 @@ repos:
           args:
             - --safe
 
-# Turn off for now
-#   - repo: https://github.com/pre-commit/mirrors-mypy
-#     rev: v0.902
-#     hooks:
-#         - id: mypy
-#           additional_dependencies:
-#             - types-click
-#             - types-ujson
-
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: 'v1.4.1'
+    rev: v1.9.0
     hooks:
-      - id: mypy
+        - id: mypy
 
   - repo: https://github.com/Riverside-Healthcare/djLint
     rev: v1.32.1
