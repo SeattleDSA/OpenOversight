@@ -1,5 +1,5 @@
 # node layer to build static assets
-FROM node:21 AS nodejs
+FROM node:22 AS nodejs
 WORKDIR /usr/src/app/
 COPY package.json yarn.lock ./
 RUN yarn install
