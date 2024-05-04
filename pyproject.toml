@@ -37,7 +37,7 @@ wtforms-sqlalchemy = "0.3"
 [tool.poetry.group.dev.dependencies]
 faker = "24.4.0"
 flake8 = "7.0.0"
-ipython = "^8.22.1"
+ipython = "^8.24.0"
 mypy = "1.9.0"
 myst-parser = "2.0.0"
 pandas = "^2.2.1"
