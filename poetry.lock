@@ -891,13 +891,13 @@ Flask = "*"
 
 [[package]]
 name = "flask-migrate"
-version = "4.0.4"
+version = "4.0.7"
 description = "SQLAlchemy database migrations for Flask applications using Alembic."
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "Flask-Migrate-4.0.4.tar.gz", hash = "sha256:73293d40b10ac17736e715b377e7b7bde474cb8105165d77474df4c3619b10b3"},
-    {file = "Flask_Migrate-4.0.4-py3-none-any.whl", hash = "sha256:77580f27ab39bc68be4906a43c56d7674b45075bc4f883b1d0b985db5164d58f"},
+    {file = "Flask-Migrate-4.0.7.tar.gz", hash = "sha256:dff7dd25113c210b069af280ea713b883f3840c1e3455274745d7355778c8622"},
+    {file = "Flask_Migrate-4.0.7-py3-none-any.whl", hash = "sha256:5c532be17e7b43a223b7500d620edae33795df27c75811ddf32560f7d48ec617"},
 ]
 
 [package.dependencies]
@@ -3264,4 +3264,4 @@ WTForms = ">=1.0.5"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "0fd4734de96606f4aa566af15b2bd61a2c99d243effb8e9e6a3c92de4589e998"
+content-hash = "35359573790e21bc688da497df04c9ab4c722cb2e98be8c8a2b1e6d0ce581514"
