@@ -101,6 +101,7 @@ class ProductionConfig(BaseConfig):
     def __init__(self):
         super(ProductionConfig, self).__init__()
         self.SITEMAP_URL_SCHEME = "https"
+        self.PREFERRED_URL_SCHEME = "https"
 
 
 config: dict[str, BaseConfig] = {
