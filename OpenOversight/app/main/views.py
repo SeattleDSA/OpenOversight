@@ -334,9 +334,7 @@ def officer_profile(officer_id: int):
             face_paths = [
                 (
                     None,
-                    url_for(
-                        "static", filename="images/placeholder.png", _external=True
-                    ),
+                    url_for("static", filename="images/placeholder.png"),
                 )
             ]
     except Exception:

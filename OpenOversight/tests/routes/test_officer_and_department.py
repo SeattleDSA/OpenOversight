@@ -146,9 +146,7 @@ def test_officer_appropriately_shows_placeholder(
 ):
     with current_app.test_request_context():
         officer = Officer.query.filter(filter_func(Officer.face.any())).first()
-        placeholder = url_for(
-            "static", filename="images/placeholder.png", _external=True
-        )
+        placeholder = url_for("static", filename="images/placeholder.png")
 
         rv = client.get(
             url_for("main.officer_profile", officer_id=officer.id),
