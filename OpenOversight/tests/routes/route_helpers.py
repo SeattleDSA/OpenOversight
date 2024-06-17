@@ -75,7 +75,7 @@ def process_form_data(form_dict: dict) -> dict:
     """Mock the browser-flattening of a form containing embedded data."""
     new_dict = {}
     for key, value in form_dict.items():
-        if type(value) == list:
+        if type(value) is list:
             if value[0]:
                 if type(value[0]) is dict:
                     for idx, item in enumerate(value):
@@ -90,7 +90,7 @@ def process_form_data(form_dict: dict) -> dict:
                             type(value[0])
                         )
                     )
-        elif type(value) == dict:
+        elif type(value) is dict:
             for sub_key, sub_value in value.items():
                 new_dict[f"{key}-{sub_key}"] = sub_value
         else:
