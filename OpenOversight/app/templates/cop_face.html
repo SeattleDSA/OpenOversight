@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "bootstrap5/utils.html" import render_icon %}
 {% block head %}
   <link href="{{ url_for('static', filename='css/cropper.css') }}"
         rel="stylesheet"
@@ -7,7 +8,7 @@
         rel="stylesheet">
 {% endblock head %}
 {% block content %}
-  <div class="container theme-showcase" role="main">
+  <div class="container theme-showcase py-5" role="main">
     {% if current_user and current_user.is_authenticated %}
       {% if image and not current_user.is_disabled %}
         <div class="row">
@@ -28,27 +29,20 @@
                  alt="Picture">
           </div>
         </div>
-        <div class="row console">
-          <div class="col-sm-1 text-center">
+        <div class="row console mt-3">
+          <div class="col-sm-2 text-center">
             <div class="preview docs-preview clearfix">
               <div class="img-preview preview-lg"></div>
             </div>
           </div>
-          <div class="col-sm-3 text-center launchroster-button">
-            <p class="subtle-pad">
-              <a href="{{ url_for("main.get_officer") }}" target='_blank'>
-                <button type="button" class="btn btn-sm">Launch roster search form</button>
-              </a>
-            </p>
-          </div>
-          <div class="col-sm-3 text-center">
+          <div class="col-sm-5 text-center">
             <div class="docs-data">
               <form action="{{ url_for('main.label_data', image_id=image.id, department_id=department.id if department else 0) }}"
                     method="post">
                 {{ form.hidden_tag() }}
                 <div class="input-group input-group-sm">
                   <input type="text"
-                         class="hidden form-control"
+                         class="d-none form-control"
                          name="dataX"
                          id="dataX"
                          placeholder="x">
@@ -60,7 +54,7 @@
                 {% endfor %}
                 <div class="input-group input-group-sm">
                   <input type="text"
-                         class="hidden form-control"
+                         class="d-none form-control"
                          name="dataY"
                          id="dataY"
                          placeholder="y">
@@ -72,7 +66,7 @@
                 {% endfor %}
                 <div class="input-group input-group-sm">
                   <input type="text"
-                         class="hidden form-control"
+                         class="d-none form-control"
                          name="dataWidth"
                          id="dataWidth"
                          placeholder="width">
@@ -84,7 +78,7 @@
                 {% endfor %}
                 <div class="input-group input-group-sm">
                   <input type="text"
-                         class="hidden form-control"
+                         class="d-none form-control"
                          name="dataHeight"
                          id="dataHeight"
                          placeholder="height">
@@ -94,7 +88,7 @@
                     <span class="red">[{{ error }}]</span>
                   </p>
                 {% endfor %}
-                <div class="input-group input-group-sm dept-input">
+                <div class="input-group dept-input">
                   {% if department %}
                     <input type="hidden"
                            class="form-control"
@@ -102,12 +96,14 @@
                            id="department_id"
                            value="{{ department.id }}">
                   {% else %}
-                    <label class="input-group-addon" for="department_id">Department id</label>
+                    <div class="input-group-text">
+                      <label for="department_id">Department id</label>
+                    </div>
                     <input type="text"
-                           class="form-control"
+                           class="col-md-8 form-control"
                            name="department_id"
                            id="department_id"
-                           placeholder="department id">
+                           placeholder="Department id">
                   {% endif %}
                 </div>
                 {% for error in form.department_id.errors %}
@@ -115,13 +111,15 @@
                     <span class="red">[{{ error }}]</span>
                   </p>
                 {% endfor %}
-                <div class="input-group input-group-sm id-input">
-                  <label class="input-group-addon" for="star_no">Officer serial number</label>
+                <div class="input-group id-input">
+                  <div class="input-group-text">
+                    <label for="star_no">Officer serial number</label>
+                  </div>
                   <input type="text"
                          class="form-control"
                          name="star_no"
                          id="star_no"
-                         placeholder="officer serial number">
+                         placeholder="Officer serial number">
                 </div>
                 {% for error in form.star_no.errors %}
                   <p>
@@ -129,7 +127,7 @@
                   </p>
                 {% endfor %}
                 <input type="text"
-                       class="hidden form-control"
+                       class="d-none form-control"
                        name="image_id"
                        id="image_id"
                        placeholder="image ID"
@@ -139,13 +137,12 @@
                     <span class="red">Image: [{{ error }}]</span>
                   </p>
                 {% endfor %}
-                <p>
-                  <div class="input-group addface-button">
-                    <input type="submit"
-                           class="btn btn-sm btn-primary form-control"
-                           value="Add identified face" />
-                  </div>
-                </p>
+                <input type="submit"
+                       class="btn btn-sm btn-primary form-control addface-button"
+                       value="Add identified face" />
+                <a class="btn btn-sm btn-secondary form-control launchroster-button"
+                   href="{{ url_for("main.get_officer") }}"
+                   target='_blank'>Launch roster search form</a>
                 <div class="text-center input-explanation">
                   <div class="text addface-button-explanation">
                     <b>Explanation</b>: click this button to associate the selected image with the entered OpenOversight ID.
@@ -156,31 +153,32 @@
                   <div class="text id-explanation">
                     <b>Explanation</b>: enter the officer's serial number here.
                   </div>
+                  <div class="text launchroster-button-explanation">
+                    <b>Explanation</b>: click this button to open the police roster.  Use the roster to find the officer's OpenOversight ID.
+                  </div>
                 </div>
               </form>
             </div>
           </div>
-          <div class="col-sm-2 text-center skip-button">
+          <div class="col-sm-5 text-center">
             {% if department %}
               <a href="{{ url_for('main.label_data', department_id=department.id) }}"
-                 class="btn btn-lg btn-primary"
+                 class="skip-button btn btn-lg btn-primary"
                  role="button">
-                <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
+                <div>{{ render_icon("arrow-repeat") }}</div>
                 Next Photo
               </a>
             {% else %}
               <a href="{{ url_for("main.label_data") }}"
-                 class="btn btn-lg btn-primary"
+                 class="skip-button btn btn-lg btn-primary"
                  role="button">
-                <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
+                <div>{{ render_icon("arrow-repeat") }}</div>
                 Next Photo
               </a>
             {% endif %}
-          </div>
-          <div class="col-sm-2 text-center done-button">
             <a href="{{ url_for('main.complete_tagging', image_id=image.id, department_id=department.id if department else 0, contains_cops=0) }}"
-               class="btn btn-sm btn-success">
-              <span class="glyphicon glyphicon glyphicon-ok" aria-hidden="true"></span>
+               class="done-button btn btn-lg btn-success">
+              <div>{{ render_icon("check-circle-fill") }}</div>
               All officers have been identified!
             </a>
           </div>
@@ -193,9 +191,6 @@
                 </div>
                 <div class="text skip-button-explanation">
                   <b>Explanation</b>: click this button if you would like to move on to the next image, without saving any info about this image.
-                </div>
-                <div class="text launchroster-button-explanation">
-                  <b>Explanation</b>: click this button to open the police roster.  Use the roster to find the officer's OpenOversight ID.
                 </div>
               </div>
             </div>

@@ -18,7 +18,7 @@
   </style>
 {% endblock head %}
 {% block content %}
-  <div class="container theme-showcase" role="main">
+  <div class="container theme-showcase py-5" role="main">
     {% if current_user and current_user.is_authenticated %}
       {% if image_id and not current_user.is_disabled %}
         <div class="row form-group">
@@ -27,7 +27,7 @@
             <p>
               There are multiple officers in the {{ department.name }} with the serial number {{ form.star_no.data }}. Which one did you mean?
             </p>
-            <div>
+            <div class="card my-3 text-bg-light">
               <form action="{{ url_for('main.label_data', image_id=image_id, department_id=department.id if department else None) }}"
                     method="post">
                 {{ form.hidden_tag() }}
@@ -73,7 +73,7 @@
                     <span class="red">[{{ error }}]</span>
                   </p>
                 {% endfor %}
-                <div class="row text-center well">
+                <div class="row text-center card-body">
                   <fieldset>
                     {% for officer in officers %}
                       <label class="col-sm-3 officer-select" for="officer-{{ officer.id }}">
@@ -93,8 +93,7 @@
                       </label>
                     {% endfor %}
                   </fieldset>
-                  <br>
-                  <input class="btn btn-primary btn-lg" type="submit" value="Submit!">
+                  <input class="btn btn-primary btn-lg mt-3" type="submit" value="Submit!">
                 </div>
               </form>
             </div>
@@ -134,6 +133,3 @@
     {% endif %}
   </div>
 {% endblock content %}
-{% block footer_class %}
-  bottom-10
-{% endblock footer_class %}

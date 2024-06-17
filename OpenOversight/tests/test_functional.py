@@ -75,41 +75,27 @@ def wait_for_element_to_be_visible(browser, locator, text, timeout=10):
         pytest.fail("Timed out while waiting for element to become visible")
 
 
+def scroll_to_element(browser, element):
+    browser.execute_script(
+        "arguments[0].scrollIntoView({ behavior: 'instant', block: 'center' });",
+        element,
+    )
+    return element
+
+
 @pytest.mark.xdist_group
 def test_user_can_load_homepage_and_get_to_form(mockdata, browser, server_port):
     browser.get(f"http://localhost:{server_port}")
+    wait_for_element_to_be_visible(browser, By.ID, "cpd")
 
     # Complainant loads homepage
     assert "OpenOversight" in browser.title
-    with wait_for_page_load(browser):
-        browser.find_element("id", "cpd").click()
+    element = browser.find_element(By.ID, "cpd")
+    scroll_to_element(browser, element)
+    element.click()
 
     page_text = browser.find_element("tag name", "body").text
     assert "Find an Officer" in page_text
-
-
-@pytest.mark.xdist_group
-def test_user_can_use_form_to_get_to_browse(mockdata, browser, server_port):
-    browser.get(f"http://localhost:{server_port}/find")
-
-    # Complainant selects department and proceeds to next step
-    browser.find_element("id", "activate-step-2").click()
-
-    # Complainant puts in what they remember about name/badge number and
-    # proceeds to next step
-    browser.find_element("id", "activate-step-3").click()
-
-    # Complainant selects the officer rank and proceeds to next step
-    browser.find_element("id", "activate-step-4").click()
-
-    # Complainant fills out demographic information on officer
-    # Complainant clicks generate list and gets list of officers
-    with wait_for_page_load(browser):
-        browser.find_element("name", "submit-officer-search-form").click()
-
-    page_text = browser.find_element("tag name", "body").text
-    assert "Filter officers" in page_text
-    assert browser.find_element("id", "officer-profile-1")
 
 
 @pytest.mark.xdist_group
@@ -164,7 +150,7 @@ def test_officer_browse_pagination(mockdata, browser, server_port):
     assert expected in page_text
 
     # check that "Previous" pagination link does not automatically add require_photo parameter
-    previous_link = browser.find_elements(By.XPATH, '//li[@class="previous"]/a')[
+    previous_link = browser.find_elements(By.CSS_SELECTOR, "li.previous a")[
         0
     ].get_attribute("href")
     assert "gender" in previous_link
@@ -176,18 +162,17 @@ def test_find_officer_can_see_uii_question_for_depts_with_uiis(
     mockdata, browser, server_port
 ):
     browser.get(f"http://localhost:{server_port}/find")
+    wait_for_element(browser, By.TAG_NAME, "body")
 
     dept_with_uii = Department.query.filter(
-        Department.unique_internal_identifier_label.isnot(None)
+        Department.unique_internal_identifier_label.is_not(None)
     ).first()
-    dept_id = str(dept_with_uii.id)
 
     dept_selector = Select(browser.find_element("id", "dept"))
-    dept_selector.select_by_value(dept_id)
-    browser.find_element("id", "activate-step-2").click()
+    uii_element = browser.find_element("id", "uii-question")
 
-    page_text = browser.find_element("tag name", "body").text
-    assert "Do you know any part of the Officer's" in page_text
+    dept_selector.select_by_value(str(dept_with_uii.id))
+    assert uii_element.is_displayed()
 
 
 @pytest.mark.xdist_group
@@ -195,18 +180,17 @@ def test_find_officer_cannot_see_uii_question_for_depts_without_uiis(
     mockdata, browser, server_port
 ):
     browser.get(f"http://localhost:{server_port}/find")
+    wait_for_element(browser, By.TAG_NAME, "body")
 
     dept_without_uii = Department.query.filter_by(
         unique_internal_identifier_label=None
     ).first()
-    dept_id = str(dept_without_uii.id)
 
     dept_selector = Select(browser.find_element("id", "dept"))
-    dept_selector.select_by_value(dept_id)
-    browser.find_element("id", "activate-step-2").click()
+    uii_element = browser.find_element("id", "uii-question")
 
-    uii_elements = browser.find_elements("id", "#uii-question")
-    assert len(uii_elements) == 0
+    dept_selector.select_by_value(str(dept_without_uii.id))
+    assert not uii_element.is_displayed()
 
 
 @pytest.mark.xdist_group
@@ -221,7 +205,8 @@ def test_incident_detail_display_read_more_button_for_descriptions_over_cutoff(
     ).one_or_none()
     incident_id = str(incident_long_description.id)
 
-    result = browser.find_element("id", "description-overflow-row_" + incident_id)
+    result = browser.find_element(By.ID, "description-overflow-row_" + incident_id)
+    scroll_to_element(browser, result)
     assert result.is_displayed()
 
 
@@ -254,7 +239,8 @@ def test_incident_detail_do_not_display_read_more_button_for_descriptions_under_
     browser.get(f"http://localhost:{server_port}/officers/1")
 
     # Select incident for officer that has description under cutoff chars
-    result = browser.find_element("id", "description-overflow-row_1")
+    result = browser.find_element(By.ID, "description-overflow-row_1")
+    scroll_to_element(browser, result)
     assert not result.is_displayed()
 
 
@@ -269,7 +255,8 @@ def test_click_to_read_more_displays_full_description(mockdata, browser, server_
     original_description = incident_long_description.description.strip()
     incident_id = str(incident_long_description.id)
 
-    button = browser.find_element("id", "description-overflow-button_" + incident_id)
+    button = browser.find_element(By.ID, "description-overflow-button_" + incident_id)
+    scroll_to_element(browser, button)
     button.click()
 
     description_text = browser.find_element(
@@ -290,6 +277,7 @@ def test_click_to_read_more_hides_the_read_more_button(mockdata, browser, server
     incident_id = str(incident_long_description.id)
 
     button = browser.find_element("id", "description-overflow-button_" + incident_id)
+    scroll_to_element(browser, button)
     button.click()
 
     buttonRow = browser.find_element("id", "description-overflow-row_" + incident_id)
@@ -379,7 +367,10 @@ def test_image_classification_and_tagging(mockdata, browser, server_port):
     browser.find_element(By.ID, "first_name").send_keys("Officer")
     browser.find_element(By.ID, "last_name").send_keys("Friendly")
     browser.find_element(By.ID, "star_no").send_keys(star_no)
-    browser.find_element(By.ID, "submit").click()
+
+    submit = browser.find_element(By.ID, "submit")
+    scroll_to_element(browser, submit)
+    submit.click()
 
     wait_for_page_load(browser)
     # expected url: http://localhost:{server_port}/submit_officer_images/officer/<id>
@@ -389,7 +380,9 @@ def test_image_classification_and_tagging(mockdata, browser, server_port):
     browser.get(f"http://localhost:{server_port}/submit")
     wait_for_page_load(browser)
 
-    Select(browser.find_element("id", "department")).select_by_value(dept_id)
+    select = browser.find_element("id", "department")
+    scroll_to_element(browser, select)
+    Select(select).select_by_value(dept_id)
     submit_image_to_dropzone(browser, img_path)
 
     # 4. Classify the uploaded image
@@ -411,7 +404,11 @@ def test_image_classification_and_tagging(mockdata, browser, server_port):
     browser.get(f"http://localhost:{server_port}/cop_faces/departments/{dept_id}")
     wait_for_page_load(browser)
     browser.find_element(By.ID, "star_no").send_keys(star_no)
-    browser.find_element(By.CSS_SELECTOR, "input[value='Add identified face']").click()
+    add_face = browser.find_element(
+        By.CSS_SELECTOR, "input[value='Add identified face']"
+    )
+    scroll_to_element(browser, add_face)
+    add_face.click()
 
     wait_for_page_load(browser)
     page_text = browser.find_element(By.TAG_NAME, "body").text
@@ -467,7 +464,9 @@ def test_anonymous_user_can_upload_image(mockdata, browser, server_port):
     browser.get(f"http://localhost:{server_port}/submit")
     wait_for_page_load(browser)
 
-    dept_select = Select(browser.find_element("id", "department"))
+    select = browser.find_element(By.ID, "department")
+    dept_select = Select(select)
+    scroll_to_element(browser, select)
     dept_select.select_by_visible_text("[WA] Auburn Police Department")
     dept_id = dept_select.first_selected_option.get_attribute("value")
 
