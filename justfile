@@ -66,6 +66,9 @@ fresh-start:
 	{{ RUN_WEB }} flask add-department "Seattle Police Department" "SPD" "WA"
 	{{ RUN_WEB }} flask bulk-add-officers /data/init_data.csv
 
+	# Stamp the database
+	@just db stamp
+
 	# Start containers
 	@just up
 
