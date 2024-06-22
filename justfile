@@ -55,7 +55,7 @@ deploy:
     @just up
 
 # Tear down the database, remove the volumes, recreate the database, and populate it with sample data
-fresh-start:
+fresh-start: dotenv
 	# Tear down existing containers, remove volume
 	@just down -v
 	@just build
