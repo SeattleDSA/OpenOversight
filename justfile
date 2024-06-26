@@ -60,14 +60,14 @@ fresh-start:
 	@just down -v
 	@just build
 
-	# Start up and populate fields
+	# Prepare the database
 	{{ RUN_WEB }} python create_db.py
+	@just db stamp
+
+	# Populate users and data
 	{{ RUN_WEB }} flask make-admin-user
 	{{ RUN_WEB }} flask add-department "Seattle Police Department" "SPD" "WA"
 	{{ RUN_WEB }} flask bulk-add-officers /data/init_data.csv
-
-	# Stamp the database
-	@just db stamp
 
 	# Start containers
 	@just up
