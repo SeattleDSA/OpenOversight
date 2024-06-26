@@ -65,7 +65,7 @@ fresh-start: dotenv
 	{{ RUN_WEB }} flask db stamp
 
 	# Populate users and data
-	{{ RUN_WEB }} flask make-admin-user
+	{{ RUN_WEB }} flask make-admin-user --username admin --email admin@admin.com --password admin
 	{{ RUN_WEB }} flask add-department "Seattle Police Department" "SPD" "WA"
 	{{ RUN_WEB }} flask bulk-add-officers -y /data/init_data.csv
 
