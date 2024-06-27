@@ -94,7 +94,7 @@ lock:
 
 # Run Flask-Migrate tasks in the web container
 db +migrateargs:
-    just run --no-deps web flask db {{ migrateargs }}
+    just run web flask db {{ migrateargs }}
 
 # Run unit tests in the web container
 test *pytestargs:
