@@ -54,7 +54,7 @@
           {% endfor %}
           <button class="btn btn-success js-add-another-button" disabled>Add another description</button>
         </div>
-        <div class="mt-3">{{ wtf.render_field(form.submit, id="submit", button_map={'submit':'primary'}) }}</div>
+        {{ wtf.render_field(form.submit, id="submit", button_map={'submit':'primary'}) }}
       </form>
       <br>
     </div>
