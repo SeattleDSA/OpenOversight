@@ -62,7 +62,7 @@ fresh-start:
 
 	# Prepare the database
 	{{ RUN_WEB }} python create_db.py
-	@just db stamp
+	{{ RUN_WEB }} flask db stamp
 
 	# Populate users and data
 	{{ RUN_WEB }} flask make-admin-user
