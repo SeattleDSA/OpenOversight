@@ -4,7 +4,7 @@ import pytest
 from flask import current_app, url_for
 
 from OpenOversight.app.auth.forms import EditUserForm, LoginForm, RegistrationForm
-from OpenOversight.app.models.database import User, db
+from OpenOversight.app.models.database import User
 from OpenOversight.app.utils.constants import ENCODING_UTF_8
 from OpenOversight.tests.conftest import AC_DEPT
 from OpenOversight.tests.constants import (
@@ -134,7 +134,7 @@ def test_admin_can_delete_user(mockdata, client, session):
         assert f"User {user.username} has been deleted!" in rv.data.decode(
             ENCODING_UTF_8
         )
-        assert not db.session.get(User, user.id)
+        assert not session.get(User, user.id)
 
 
 def test_admin_cannot_delete_other_admin(mockdata, client, session):
@@ -150,7 +150,7 @@ def test_admin_cannot_delete_other_admin(mockdata, client, session):
         )
 
         assert rv.status_code == HTTPStatus.FORBIDDEN
-        assert db.session.get(User, user.id) is not None
+        assert session.get(User, user.id) is not None
 
 
 def test_admin_can_disable_user(mockdata, client, session):
@@ -175,7 +175,7 @@ def test_admin_can_disable_user(mockdata, client, session):
 
         assert "updated!" in rv.data.decode(ENCODING_UTF_8)
 
-        user = db.session.get(User, user.id)
+        user = session.get(User, user.id)
         assert user.is_disabled
 
 
@@ -198,7 +198,7 @@ def test_admin_cannot_disable_self(mockdata, client, session):
 
         assert "You cannot edit your own account!" in rv.data.decode(ENCODING_UTF_8)
 
-        user = db.session.get(User, user.id)
+        user = session.get(User, user.id)
         assert not user.is_disabled
 
 
@@ -208,9 +208,9 @@ def test_admin_can_enable_user(mockdata, client, session):
 
         user = User.query.filter_by(email=GENERAL_USER_EMAIL).one()
         user.is_disabled = True
-        db.session.commit()
+        session.commit()
 
-        user = db.session.get(User, user.id)
+        user = session.get(User, user.id)
         assert user.is_disabled
 
         form = EditUserForm(
@@ -226,7 +226,7 @@ def test_admin_can_enable_user(mockdata, client, session):
 
         assert "updated!" in rv.data.decode(ENCODING_UTF_8)
 
-        user = db.session.get(User, user.id)
+        user = session.get(User, user.id)
         assert not user.is_disabled
 
 
@@ -291,9 +291,9 @@ def test_admin_can_approve_user(mockdata, client, session):
 
         user = User.query.filter_by(email=GENERAL_USER_EMAIL).first()
         user.approved = False
-        db.session.commit()
+        session.commit()
 
-        user = db.session.get(User, user.id)
+        user = session.get(User, user.id)
         assert not user.approved
 
         form = EditUserForm(
@@ -309,7 +309,7 @@ def test_admin_can_approve_user(mockdata, client, session):
 
         assert "updated!" in rv.data.decode(ENCODING_UTF_8)
 
-        user = db.session.get(User, user.id)
+        user = session.get(User, user.id)
         assert user.approved
 
 
@@ -344,9 +344,9 @@ def test_admin_approval_sends_confirmation_email(
         user = User.query.filter_by(is_administrator=False).first()
         user.approved = currently_approved
         user.confirmed = currently_confirmed
-        db.session.commit()
+        session.commit()
 
-        user = db.session.get(User, user.id)
+        user = session.get(User, user.id)
         assert user.approved == currently_approved
         assert user.confirmed == currently_confirmed
 
@@ -367,5 +367,5 @@ def test_admin_approval_sends_confirmation_email(
         ) == should_send_email
         assert "updated!" in rv.data.decode(ENCODING_UTF_8)
 
-        user = db.session.get(User, user.id)
+        user = session.get(User, user.id)
         assert user.approved

@@ -5,7 +5,7 @@ import pytest
 from flask import current_app, url_for
 
 from OpenOversight.app.main.forms import EditTextForm, TextForm
-from OpenOversight.app.models.database import Department, Note, Officer, db
+from OpenOversight.app.models.database import Department, Note, Officer
 from OpenOversight.app.models.database_cache import (
     has_database_cache_entry,
     put_database_cache_entry,
@@ -94,8 +94,8 @@ def test_admins_can_edit_notes(mockdata, client, session, faker):
             created_at=original_date,
             last_updated_at=original_date,
         )
-        db.session.add(note)
-        db.session.commit()
+        session.add(note)
+        session.commit()
 
         form = EditTextForm(
             text_contents=new_note,
@@ -130,8 +130,8 @@ def test_ac_can_edit_their_notes_in_their_department(mockdata, client, session, 
             created_at=original_date,
             last_updated_at=original_date,
         )
-        db.session.add(note)
-        db.session.commit()
+        session.add(note)
+        session.commit()
 
         form = EditTextForm(
             text_contents=new_note,
@@ -164,8 +164,8 @@ def test_ac_can_edit_others_notes(mockdata, client, session):
             last_updated_at=original_date,
             last_updated_by=user.id - 1,
         )
-        db.session.add(note)
-        db.session.commit()
+        session.add(note)
+        session.commit()
 
         form = EditTextForm(
             text_contents=new_note,
@@ -201,8 +201,8 @@ def test_ac_cannot_edit_notes_not_in_their_department(mockdata, client, session)
             last_updated_at=original_date,
             last_updated_by=user.id,
         )
-        db.session.add(note)
-        db.session.commit()
+        session.add(note)
+        session.commit()
 
         form = EditTextForm(
             text_contents=new_note,
@@ -231,7 +231,7 @@ def test_admins_can_delete_notes(mockdata, client, session):
             follow_redirects=True,
         )
         assert rv.status_code == HTTPStatus.OK
-        deleted = db.session.get(Note, note.id)
+        deleted = session.get(Note, note.id)
         assert deleted is None
         assert has_database_cache_entry(*cache_params) is False
 
@@ -249,14 +249,14 @@ def test_acs_can_delete_their_notes_in_their_department(mockdata, client, sessio
             last_updated_at=now,
             last_updated_by=user.id,
         )
-        db.session.add(note)
-        db.session.commit()
+        session.add(note)
+        session.commit()
         rv = client.post(
             url_for("main.note_api_delete", officer_id=officer.id, obj_id=note.id),
             follow_redirects=True,
         )
         assert rv.status_code == HTTPStatus.OK
-        deleted = db.session.get(Note, note.id)
+        deleted = session.get(Note, note.id)
         assert deleted is None
 
 
@@ -277,15 +277,15 @@ def test_acs_cannot_delete_notes_not_in_their_department(
             last_updated_at=now,
             last_updated_by=2,
         )
-        db.session.add(note)
-        db.session.commit()
+        session.add(note)
+        session.commit()
         rv = client.post(
             url_for("main.note_api_delete", officer_id=officer.id, obj_id=note.id),
             follow_redirects=True,
         )
 
         assert rv.status_code == HTTPStatus.FORBIDDEN
-        not_deleted = db.session.get(Note, note.id)
+        not_deleted = session.get(Note, note.id)
         assert not_deleted is not None
 
 
@@ -302,8 +302,8 @@ def test_acs_can_get_edit_form_for_their_dept(mockdata, client, session):
             last_updated_at=now,
             last_updated_by=user.id,
         )
-        db.session.add(note)
-        db.session.commit()
+        session.add(note)
+        session.commit()
         rv = client.get(
             url_for("main.note_api_edit", obj_id=note.id, officer_id=officer.id),
             follow_redirects=True,
@@ -325,8 +325,8 @@ def test_acs_can_get_others_edit_form(mockdata, client, session):
             last_updated_at=now,
             last_updated_by=user.id - 1,
         )
-        db.session.add(note)
-        db.session.commit()
+        session.add(note)
+        session.commit()
         rv = client.get(
             url_for("main.note_api_edit", obj_id=note.id, officer_id=officer.id),
             follow_redirects=True,
@@ -350,8 +350,8 @@ def test_acs_cannot_get_edit_form_for_their_non_dept(mockdata, client, session):
             last_updated_at=now,
             last_updated_by=2,
         )
-        db.session.add(note)
-        db.session.commit()
+        session.add(note)
+        session.commit()
         rv = client.get(
             url_for("main.note_api_edit", obj_id=note.id, officer_id=officer.id),
             follow_redirects=True,
@@ -372,8 +372,8 @@ def test_users_cannot_see_notes(mockdata, client, session, faker):
             last_updated_at=now,
             last_updated_by=1,
         )
-        db.session.add(note)
-        db.session.commit()
+        session.add(note)
+        session.commit()
         rv = client.get(
             url_for("main.officer_profile", officer_id=officer.id),
             follow_redirects=True,
@@ -398,8 +398,8 @@ def test_admins_can_see_notes(mockdata, client, session):
             last_updated_at=now,
             last_updated_by=user.id,
         )
-        db.session.add(note)
-        db.session.commit()
+        session.add(note)
+        session.commit()
         rv = client.get(
             url_for("main.officer_profile", officer_id=officer.id),
             follow_redirects=True,
@@ -423,8 +423,8 @@ def test_acs_can_see_notes_in_their_department(mockdata, client, session):
             last_updated_at=now,
             last_updated_by=user.id,
         )
-        db.session.add(note)
-        db.session.commit()
+        session.add(note)
+        session.commit()
         rv = client.get(
             url_for("main.officer_profile", officer_id=officer.id),
             follow_redirects=True,
@@ -450,8 +450,8 @@ def test_acs_cannot_see_notes_not_in_their_department(mockdata, client, session)
             last_updated_at=now,
             last_updated_by=1,
         )
-        db.session.add(note)
-        db.session.commit()
+        session.add(note)
+        session.commit()
         rv = client.get(
             url_for("main.officer_profile", officer_id=officer.id),
             follow_redirects=True,

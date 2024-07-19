@@ -16,7 +16,6 @@ from OpenOversight.app.models.database import (
     Job,
     Officer,
     User,
-    db,
 )
 from OpenOversight.app.utils.constants import ENCODING_UTF_8
 from OpenOversight.tests.conftest import AC_DEPT
@@ -132,9 +131,8 @@ def test_ac_cannot_delete_tag_not_in_their_dept(mockdata, client, session):
         login_ac(client)
 
         tag = (
-            Face.query.join(Officer, Face.officer_id == Officer.id)
-            .join(Department, Officer.department_id == Department.id)
-            .filter(Department.id != AC_DEPT)
+            Face.query.join(Face.officer)
+            .except_(Face.query.filter(Face.officer.has(department_id=AC_DEPT)))
             .first()
         )
 
@@ -367,7 +365,7 @@ def test_user_is_redirected_to_correct_department_after_tagging(
             ),
             follow_redirects=True,
         )
-        department = db.session.get(Department, department_id)
+        department = session.get(Department, department_id)
 
         assert rv.status_code == HTTPStatus.OK
         assert department.name in rv.data.decode(ENCODING_UTF_8)

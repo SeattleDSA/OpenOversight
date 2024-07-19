@@ -40,7 +40,6 @@ from OpenOversight.app.models.database import (
     Officer,
     Salary,
     Unit,
-    db,
 )
 from OpenOversight.app.models.database_cache import (
     has_database_cache_entry,
@@ -1760,7 +1759,7 @@ def test_assignments_csv(mockdata, client, session, department):
         all_rows = list(csv.DictReader(csv_data.split("\n")))
         for row in all_rows:
             assert (
-                db.session.get(Officer, int(row["officer id"])).department_id
+                session.get(Officer, int(row["officer id"])).department_id
                 == department.id
             )
         lines = [row for row in all_rows if int(row["officer id"]) == officer.id]

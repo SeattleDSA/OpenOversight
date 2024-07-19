@@ -5,7 +5,7 @@ import pytest
 from flask import current_app, url_for
 
 from OpenOversight.app.main.forms import EditTextForm, TextForm
-from OpenOversight.app.models.database import Description, Officer, User, db
+from OpenOversight.app.models.database import Description, Officer, User
 from OpenOversight.app.utils.constants import ENCODING_UTF_8
 from OpenOversight.tests.conftest import AC_DEPT
 from OpenOversight.tests.constants import ADMIN_USER_EMAIL
@@ -105,8 +105,8 @@ def test_admins_can_edit_descriptions(mockdata, client, session):
             created_by=admin.id,
             last_updated_by=admin.id,
         )
-        db.session.add(description)
-        db.session.commit()
+        session.add(description)
+        session.commit()
 
         form = EditTextForm(
             text_contents=new_description,
@@ -146,8 +146,8 @@ def test_ac_can_edit_their_descriptions_in_their_department(mockdata, client, se
             created_by=user.id,
             last_updated_by=user.id,
         )
-        db.session.add(description)
-        db.session.commit()
+        session.add(description)
+        session.commit()
 
         form = EditTextForm(
             text_contents=new_description,
@@ -187,8 +187,8 @@ def test_ac_can_edit_others_descriptions(mockdata, client, session):
             created_by=user.id - 1,
             last_updated_by=user.id,
         )
-        db.session.add(description)
-        db.session.commit()
+        session.add(description)
+        session.commit()
 
         form = EditTextForm(
             text_contents=new_description,
@@ -228,8 +228,8 @@ def test_ac_cannot_edit_descriptions_not_in_their_department(mockdata, client, s
             created_at=original_date,
             last_updated_at=original_date,
         )
-        db.session.add(description)
-        db.session.commit()
+        session.add(description)
+        session.commit()
 
         form = EditTextForm(
             text_contents=new_description,
@@ -261,7 +261,7 @@ def test_admins_can_delete_descriptions(mockdata, client, session):
             follow_redirects=True,
         )
         assert rv.status_code == HTTPStatus.OK
-        deleted = db.session.get(Description, description_id)
+        deleted = session.get(Description, description_id)
         assert deleted is None
 
 
@@ -278,8 +278,8 @@ def test_acs_can_delete_their_descriptions_in_their_department(
             created_at=now,
             last_updated_at=now,
         )
-        db.session.add(description)
-        db.session.commit()
+        session.add(description)
+        session.commit()
         description_id = description.id
         rv = client.post(
             url_for(
@@ -290,7 +290,7 @@ def test_acs_can_delete_their_descriptions_in_their_department(
             follow_redirects=True,
         )
         assert rv.status_code == HTTPStatus.OK
-        deleted = db.session.get(Description, description_id)
+        deleted = session.get(Description, description_id)
         assert deleted is None
 
 
@@ -309,8 +309,8 @@ def test_acs_cannot_delete_descriptions_not_in_their_department(
             created_at=now,
             last_updated_at=now,
         )
-        db.session.add(description)
-        db.session.commit()
+        session.add(description)
+        session.commit()
         description_id = description.id
         rv = client.post(
             url_for(
@@ -322,7 +322,7 @@ def test_acs_cannot_delete_descriptions_not_in_their_department(
         )
 
         assert rv.status_code == HTTPStatus.FORBIDDEN
-        not_deleted = db.session.get(Description, description_id)
+        not_deleted = session.get(Description, description_id)
         assert not_deleted is not None
 
 
@@ -334,8 +334,8 @@ def test_acs_can_get_edit_form_for_their_dept(mockdata, client, session):
             text_contents="Hello",
             officer_id=officer.id,
         )
-        db.session.add(description)
-        db.session.commit()
+        session.add(description)
+        session.commit()
         rv = client.get(
             url_for(
                 "main.description_api_edit",
@@ -358,8 +358,8 @@ def test_acs_can_get_others_edit_form(mockdata, client, session):
             created_by=user.id - 1,
             last_updated_by=user.id - 1,
         )
-        db.session.add(description)
-        db.session.commit()
+        session.add(description)
+        session.commit()
         rv = client.get(
             url_for(
                 "main.description_api_edit",
@@ -382,8 +382,8 @@ def test_acs_cannot_get_edit_form_for_their_non_dept(mockdata, client, session):
             text_contents="Hello",
             officer_id=officer.id,
         )
-        db.session.add(description)
-        db.session.commit()
+        session.add(description)
+        session.commit()
         rv = client.get(
             url_for(
                 "main.description_api_edit",
@@ -405,8 +405,8 @@ def test_users_can_see_descriptions(mockdata, client, session):
             text_contents=text_contents,
             officer_id=officer.id,
         )
-        db.session.add(description)
-        db.session.commit()
+        session.add(description)
+        session.commit()
         rv = client.get(
             url_for("main.officer_profile", officer_id=officer.id),
             follow_redirects=True,
@@ -426,8 +426,8 @@ def test_admins_can_see_descriptions(mockdata, client, session):
             text_contents=text_contents,
             officer_id=officer.id,
         )
-        db.session.add(description)
-        db.session.commit()
+        session.add(description)
+        session.commit()
         rv = client.get(
             url_for("main.officer_profile", officer_id=officer.id),
             follow_redirects=True,
@@ -446,8 +446,8 @@ def test_acs_can_see_descriptions_in_their_department(mockdata, client, session)
             text_contents=text_contents,
             officer_id=officer.id,
         )
-        db.session.add(description)
-        db.session.commit()
+        session.add(description)
+        session.commit()
         rv = client.get(
             url_for("main.officer_profile", officer_id=officer.id),
             follow_redirects=True,
@@ -469,8 +469,8 @@ def test_acs_can_see_descriptions_not_in_their_department(mockdata, client, sess
             text_contents=text_contents,
             officer_id=officer.id,
         )
-        db.session.add(description)
-        db.session.commit()
+        session.add(description)
+        session.commit()
         rv = client.get(
             url_for("main.officer_profile", officer_id=officer.id),
             follow_redirects=True,
@@ -494,8 +494,8 @@ def test_anonymous_users_cannot_see_description_creators(mockdata, client, sessi
             created_by=ac.id,
             last_updated_by=ac.id,
         )
-        db.session.add(description)
-        db.session.commit()
+        session.add(description)
+        session.commit()
 
         rv = client.get(
             url_for("main.officer_profile", officer_id=officer.id),

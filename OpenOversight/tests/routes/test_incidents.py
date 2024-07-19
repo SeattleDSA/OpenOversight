@@ -13,7 +13,7 @@ from OpenOversight.app.main.forms import (
     LocationForm,
     OOIdForm,
 )
-from OpenOversight.app.models.database import Department, Incident, Officer, User, db
+from OpenOversight.app.models.database import Department, Incident, Officer, User
 from OpenOversight.app.utils.constants import ENCODING_UTF_8
 from OpenOversight.tests.conftest import AC_DEPT
 from OpenOversight.tests.routes.route_helpers import (
@@ -250,7 +250,7 @@ def test_admins_can_edit_incident_date_and_address(mockdata, client, session):
         )
         assert rv.status_code == HTTPStatus.OK
         assert "successfully updated" in rv.data.decode(ENCODING_UTF_8)
-        updated = db.session.get(Incident, inc_id)
+        updated = session.get(Incident, inc_id)
         assert updated.date == test_date
         assert updated.time == test_time
         assert updated.address.street_name == street_name
@@ -680,7 +680,7 @@ def test_admins_can_delete_incidents(mockdata, client, session):
             follow_redirects=True,
         )
         assert rv.status_code == HTTPStatus.OK
-        deleted = db.session.get(Incident, inc_id)
+        deleted = session.get(Incident, inc_id)
         assert deleted is None
 
 
@@ -694,7 +694,7 @@ def test_acs_can_delete_incidents_in_their_department(mockdata, client, session)
             follow_redirects=True,
         )
         assert rv.status_code == HTTPStatus.OK
-        deleted = db.session.get(Incident, inc_id)
+        deleted = session.get(Incident, inc_id)
         assert deleted is None
 
 
@@ -710,7 +710,7 @@ def test_acs_cannot_delete_incidents_not_in_their_department(mockdata, client, s
             follow_redirects=True,
         )
         assert rv.status_code == HTTPStatus.FORBIDDEN
-        not_deleted = db.session.get(Incident, inc_id)
+        not_deleted = session.get(Incident, inc_id)
         assert not_deleted.id is inc_id
 
 
