@@ -170,7 +170,9 @@ class AssignmentForm(Form):
 
 class SalaryForm(Form):
     salary = DecimalField(
-        "Salary", validators=[NumberRange(min=0, max=1000000), validate_money]
+        "Salary",
+        default=0,
+        validators=[NumberRange(min=0, max=1000000), validate_money],
     )
     overtime_pay = DecimalField(
         "Overtime Pay",
@@ -441,7 +443,7 @@ class DateFieldForm(Form):
     time_field = TimeField("Time", validators=[Optional()])
 
     def validate_time_field(self, field):
-        if not type(field.data) is time:
+        if type(field.data) is not time:
             raise ValidationError("Not a valid time.")
 
     def validate_date_field(self, field):

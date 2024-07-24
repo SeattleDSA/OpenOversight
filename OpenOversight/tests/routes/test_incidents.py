@@ -797,8 +797,8 @@ def test_form_with_officer_id_prepopulates(mockdata, client, session):
         ({"occurred_before": "2017-12-12"}, ["38", "42"], ["39"]),
         (
             {"occurred_after": "2017-12-10", "occurred_before": "2019-01-01"},
-            ["38"],
-            ["39", "42"],
+            ["38", "42"],
+            ["39"],
         ),
         ({"report_number": "38"}, ["38"], ["42", "39"]),  # Base case
         ({"report_number": "3"}, ["38", "39"], ["42"]),  # Test inclusive match

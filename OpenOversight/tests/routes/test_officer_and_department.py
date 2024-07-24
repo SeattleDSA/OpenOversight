@@ -185,7 +185,7 @@ def test_admin_can_add_assignment(mockdata, client, session):
     with current_app.test_request_context():
         login_admin(client)
 
-        officer = Officer.query.filter_by(id=3).one()
+        officer = session.get(Officer, 3)
         job = Job.query.filter_by(
             department_id=officer.department_id, job_title="Police Officer"
         ).one()
@@ -213,7 +213,7 @@ def test_admin_can_add_assignment(mockdata, client, session):
 def test_admin_add_assignment_validation_error(mockdata, client, session):
     with current_app.test_request_context():
         login_admin(client)
-        officer = Officer.query.filter_by(id=3).one()
+        officer = session.get(Officer, 3)
         job = Job.query.filter_by(
             department_id=officer.department_id, job_title="Police Officer"
         ).one()
@@ -294,7 +294,7 @@ def test_admin_can_edit_assignment(mockdata, client, session):
     with current_app.test_request_context():
         login_admin(client)
 
-        officer = Officer.query.filter_by(id=3).one()
+        officer = session.get(Officer, 3)
         job = Job.query.filter_by(
             department_id=officer.department_id, job_title="Police Officer"
         ).one()
@@ -329,7 +329,7 @@ def test_admin_can_edit_assignment(mockdata, client, session):
             start_date=date(2019, 2, 1),
             resign_date=date(2019, 11, 30),
         )
-        officer = Officer.query.filter_by(id=3).one()
+        officer = session.get(Officer, 3)
 
         rv = client.post(
             url_for(
@@ -376,7 +376,7 @@ def test_admin_edit_assignment_validation_error(
 
         # Attempt to set resign date to a date before the start date
         form = AssignmentForm(resign_date=date(2018, 12, 31))
-        officer = Officer.query.filter_by(id=officer.id).one()
+        officer = session.get(Officer, officer.id)
 
         rv = client.post(
             url_for(
@@ -426,7 +426,7 @@ def test_ac_can_edit_officer_in_their_dept_assignment(mockdata, client, session)
         assert officer.assignments[0].start_date == date(2019, 1, 1)
         assert officer.assignments[0].resign_date == date(2019, 12, 31)
 
-        officer = Officer.query.filter_by(id=officer.id).one()
+        officer = session.get(Officer, officer.id)
         job = Job.query.filter_by(
             department_id=officer.department_id, job_title="Commander"
         ).one()
@@ -483,7 +483,7 @@ def test_ac_cannot_edit_assignment_outside_their_dept(mockdata, client, session)
 
         login_ac(client)
 
-        officer = Officer.query.filter_by(id=officer.id).one()
+        officer = session.get(Officer, officer.id)
         job = Job.query.filter_by(
             department_id=officer.department_id, job_title="Commander"
         ).one()
@@ -1253,7 +1253,7 @@ def test_admin_can_add_new_officer_with_unit(
 def test_ac_can_add_new_officer_in_their_dept(mockdata, client, session):
     with current_app.test_request_context():
         login_ac(client)
-        department = Department.query.filter_by(id=AC_DEPT).first()
+        department = session.get(Department, AC_DEPT)
         first_name = "Testy"
         last_name = "OTester"
         middle_initial = "R"
@@ -1295,7 +1295,7 @@ def test_ac_can_add_new_officer_in_their_dept(mockdata, client, session):
 def test_ac_can_add_new_officer_with_unit_in_their_dept(mockdata, client, session):
     with current_app.test_request_context():
         login_ac(client)
-        department = Department.query.filter_by(id=AC_DEPT).first()
+        department = session.get(Department, AC_DEPT)
         unit = random.choice(unit_choices(department_id=department.id))
         first_name = "Testy"
         last_name = "OTester"
@@ -1439,7 +1439,7 @@ def test_ac_cannot_edit_officer_not_in_their_dept(mockdata, client, session):
         assert rv.status_code == HTTPStatus.FORBIDDEN
 
         # Ensure changes were not made to database
-        officer = Officer.query.filter_by(id=officer.id).one()
+        officer = session.get(Officer, officer.id)
         assert officer.last_name == old_last_name
 
 
@@ -1464,7 +1464,7 @@ def test_ac_can_see_officer_not_in_their_dept(mockdata, client, session):
 def test_ac_can_edit_officer_in_their_dept(mockdata, client, session):
     with current_app.test_request_context():
         login_ac(client)
-        department = Department.query.filter_by(id=AC_DEPT).first()
+        department = session.get(Department, AC_DEPT)
         unit = random.choice(unit_choices(department.id))
         first_name = "Testier"
         last_name = "OTester"
@@ -1514,7 +1514,7 @@ def test_ac_can_edit_officer_in_their_dept(mockdata, client, session):
         assert last_name not in rv.data.decode(ENCODING_UTF_8)
 
         # Check the changes were added to the database
-        officer = Officer.query.filter_by(id=officer.id).one()
+        officer = session.get(Officer, officer.id)
         assert officer.last_name == new_last_name
 
 
@@ -1602,7 +1602,7 @@ def test_ac_can_add_new_unit_in_their_dept(mockdata, client, session):
     with current_app.test_request_context():
         login_ac(client)
 
-        department = Department.query.filter_by(id=AC_DEPT).first()
+        department = session.get(Department, AC_DEPT)
         form = AddUnitForm(description="Test", department=department.id)
 
         rv = client.post(
@@ -2018,7 +2018,7 @@ def test_admin_can_upload_photos_of_dept_officers(
 
         data = {"file": (test_jpg_bytes_io, "204Cat.png")}
 
-        department = Department.query.filter_by(id=AC_DEPT).first()
+        department = session.get(Department, AC_DEPT)
         officer = department.officers[3]
         officer_face_count = len(officer.face)
 
@@ -2058,7 +2058,7 @@ def test_upload_photo_sends_500_on_s3_error(
 
         data = {"file": (test_png_bytes_io, "204Cat.png")}
 
-        department = Department.query.filter_by(id=AC_DEPT).first()
+        department = session.get(Department, AC_DEPT)
         mock = MagicMock(return_value=None)
         officer = department.officers[0]
         officer_face_count = len(officer.face)
@@ -2080,7 +2080,7 @@ def test_upload_photo_sends_415_for_bad_file_type(mockdata, client, session):
     with current_app.test_request_context():
         login_admin(client)
         data = {"file": (BytesIO(b"my file contents"), "test_cop1.png")}
-        department = Department.query.filter_by(id=AC_DEPT).first()
+        department = session.get(Department, AC_DEPT)
         officer = department.officers[0]
         mock = MagicMock(return_value=False)
         with patch("OpenOversight.app.main.views.allowed_file", mock):
@@ -2099,7 +2099,7 @@ def test_user_cannot_upload_officer_photo(mockdata, client, session):
     with current_app.test_request_context():
         login_user(client)
         data = {"file": (BytesIO(b"my file contents"), "test_cop1.png")}
-        department = Department.query.filter_by(id=AC_DEPT).first()
+        department = session.get(Department, AC_DEPT)
         officer = department.officers[0]
         rv = client.post(
             url_for("main.upload", department_id=department.id, officer_id=officer.id),
@@ -2118,7 +2118,7 @@ def test_ac_can_upload_photos_of_dept_officers(
         data = {
             "file": (test_png_bytes_io, "204Cat.png"),
         }
-        department = Department.query.filter_by(id=AC_DEPT).first()
+        department = session.get(Department, AC_DEPT)
         officer = department.officers[4]
         officer_face_count = len(officer.face)
 
@@ -2191,7 +2191,7 @@ def test_edit_officers_with_blank_uids(mockdata, client, session):
 def test_admin_can_add_salary(mockdata, client, session):
     with current_app.test_request_context():
         login_admin(client)
-        officer = Officer.query.filter_by(id=AC_DEPT).first()
+        officer = session.get(Officer, AC_DEPT)
         cache_params = (Department(id=officer.department_id), KEY_DEPT_ALL_SALARIES)
         put_database_cache_entry(*cache_params, 1)
 
@@ -2270,7 +2270,7 @@ def test_ac_cannot_add_non_dept_salary(mockdata, client, session):
 def test_admin_can_edit_salary(mockdata, client, session):
     with current_app.test_request_context():
         login_admin(client)
-        officer = Officer.query.filter_by(id=1).first()
+        officer = session.get(Officer, 1)
         cache_params = (Department(id=officer.department_id), KEY_DEPT_ALL_SALARIES)
         put_database_cache_entry(*cache_params, 1)
 
@@ -2296,7 +2296,7 @@ def test_admin_can_edit_salary(mockdata, client, session):
         assert "<td>$123,456.78</td>" in rv.data.decode(ENCODING_UTF_8)
 
         form = SalaryForm(salary="150000")
-        officer = Officer.query.filter_by(id=1).one()
+        officer = session.get(Officer, 1)
 
         rv = client.post(
             url_for(
@@ -2312,9 +2312,8 @@ def test_admin_can_edit_salary(mockdata, client, session):
         assert "Edited officer salary" in rv.data.decode(ENCODING_UTF_8)
         assert "<td>$150,000.00</td>" in rv.data.decode(ENCODING_UTF_8)
 
-        officer = Officer.query.filter_by(id=1).one()
+        officer = session.get(Officer, 1)
         assert officer.salaries[0].salary == Decimal("150000")
-        assert officer.salaries[0].salary == 150000
         assert has_database_cache_entry(*cache_params) is False
 
 
@@ -2344,7 +2343,7 @@ def test_ac_can_edit_salary_in_their_dept(mockdata, client, session):
         assert "<td>$123,456.78</td>" in rv.data.decode(ENCODING_UTF_8)
 
         form = SalaryForm(salary="150000")
-        officer = Officer.query.filter_by(id=officer_id).one()
+        officer = session.get(Officer, officer.id)
 
         rv = client.post(
             url_for(
@@ -2360,7 +2359,7 @@ def test_ac_can_edit_salary_in_their_dept(mockdata, client, session):
         assert "Edited officer salary" in rv.data.decode(ENCODING_UTF_8)
         assert "<td>$150,000.00</td>" in rv.data.decode(ENCODING_UTF_8)
 
-        officer = Officer.query.filter_by(id=officer_id).one()
+        officer = session.get(Officer, officer.id)
         assert officer.salaries[0].salary == Decimal(150000)
 
 
@@ -2390,7 +2389,7 @@ def test_ac_cannot_edit_non_dept_salary(mockdata, client, session):
 
         login_ac(client)
         form = SalaryForm(salary="150000")
-        officer = Officer.query.filter_by(id=officer_id).one()
+        officer = session.get(Officer, officer.id)
 
         rv = client.post(
             url_for(
@@ -2405,7 +2404,7 @@ def test_ac_cannot_edit_non_dept_salary(mockdata, client, session):
 
         assert rv.status_code == HTTPStatus.FORBIDDEN
 
-        officer = Officer.query.filter_by(id=officer_id).one()
+        officer = session.get(Officer, officer.id)
         assert officer.salaries[0].salary == Decimal("123456.78")
 
 
@@ -2566,7 +2565,7 @@ def test_ac_can_add_link_with_content_warning(
 def test_admin_can_edit_link_on_officer_profile(mockdata, client, session):
     with current_app.test_request_context():
         login_admin(client)
-        officer = Officer.query.filter_by(id=1).one()
+        officer = session.get(Officer, 1)
         cache_params = (Department(id=officer.department_id), KEY_DEPT_ALL_LINKS)
         put_database_cache_entry(*cache_params, 1)
 
