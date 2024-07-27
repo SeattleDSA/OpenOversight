@@ -58,29 +58,38 @@ def make_admin_user(
     supplied_password: str | None,
 ):
     """Add confirmed administrator account."""
-    while True:
-        username = supplied_username or input("Username: ")
-        user = User.by_username(username).one_or_none()
-        if user:
-            print("Username is already in use")
-        else:
-            break
+    if supplied_username:
+        username = supplied_username
+    else:
+        while True:
+            username = input("Username: ")
+            user = User.by_username(username).one_or_none()
+            if user:
+                print("Username is already in use")
+            else:
+                break
 
-    while True:
-        email = supplied_email or input("Email: ")
-        user = User.by_email(email).one_or_none()
-        if user:
-            print("Email address already in use")
-        else:
-            break
+    if supplied_email:
+        email = supplied_email
+    else:
+        while True:
+            email = input("Email: ")
+            user = User.by_email(email).one_or_none()
+            if user:
+                print("Email address already in use")
+            else:
+                break
 
-    while True:
-        password = supplied_password or getpass("Password: ")
-        password_again = supplied_password or getpass("Type your password again: ")
+    if supplied_password:
+        password = supplied_password
+    else:
+        while True:
+            password = getpass("Password: ")
+            password_again = getpass("Type your password again: ")
 
-        if password == password_again:
-            break
-        print("Passwords did not match")
+            if password == password_again:
+                break
+            print("Passwords did not match")
 
     u = User(
         username=username,
