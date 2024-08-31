@@ -1,4 +1,4 @@
-![](docs/img/lpl-logo.png)
+![](docs/_static/lpl-logo.png)
 
 [![Build Status](https://github.com/OrcaCollective/OpenOversight/actions/workflows/publish.yml/badge.svg)](https://github.com/OrcaCollective/OpenOversight/actions/workflows/publish.yml)
 [![Documentation](https://img.shields.io/badge/docs-main-yellow)](https://orcacollective.github.io/OpenOversight/)
