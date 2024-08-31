@@ -68,7 +68,7 @@ This can only be prevented by not including the column in the csv at all.
 Formats:
 - `date` - The date should be provided in `YYYY-MM-DD` format.
 - `time` - Time should be provided in `HH:MM:SS` 24h-format in the respective timezone.
-- `DEPARTMENT_STATE` - The department state should be provided in the `standard two-letter abbreviation <https://www.faa.gov/air_traffic/publications/atpubs/cnt_html/appendix_a.html>`_ format.
+- `DEPARTMENT_STATE` - The department state should be provided in the [standard two-letter abbreviation](https://www.faa.gov/air_traffic/publications/atpubs/cnt_html/appendix_a.html) format.
 
 
 The `id` field
@@ -156,7 +156,7 @@ Incidents csv
 - `department_name` - Name of department exactly as in the server database.
    This needs to match the department name provided with the command.
 - `department_state` - Name of department state exactly as it is in the server database, which will be the
-   `standard two-letter abbreviation <https://www.faa.gov/air_traffic/publications/atpubs/cnt_html/appendix_a.html>`_ for the department's respective location.
+   [standard two-letter abbreviation](https://www.faa.gov/air_traffic/publications/atpubs/cnt_html/appendix_a.html) for the department's respective location.
 - `date` - [Date](https://help.highbond.com/helpdocs/analytics/13/user-guide/en-us/Content/table_definition/c_formats_of_date_and_time_source_data.htm) of the incident
 - `time` - [Time](https://help.highbond.com/helpdocs/analytics/13/user-guide/en-us/Content/table_definition/c_formats_of_date_and_time_source_data.htm) of the incident
 - `report_number` - String representing any kind of number assigned to complaints or incidents by the police department.
