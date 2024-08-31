@@ -88,8 +88,8 @@ Officers csv
 - Optional: `last_name, first_name, middle_initial, suffix, race, gender, employment_date, birth_year, unique_internal_identifier`
 - Ignored: `badge_number, job_title, most_recent_salary, unique_identifier` (Unused but command will not fail when field is present)
 
-Details
---------
+### Details
+
 - `department_name` - Name of department exactly as it is in the server database.
    This needs to match the department name provided with the command.
 - `department_state` - Name of department state exactly as it is in the server database, which will be the
@@ -112,8 +112,8 @@ Assignments csv
 - Required: `id, officer_id, job_title`
 - Optional: `badge_number, unit_id, unit_name, start_date, resign_date`
 
-Details
---------
+### Details
+
 - `officer_id` - Number referring to `id` of existing officer or string starting with `#` referring to a newly created officer in the provided officers csv.
 - `badge_number` - Any string that represents the star or badge number of the officer. In some departments this number changes with the assignment.
 - `job_title` - The job title, will be created if it does not exist.
@@ -122,8 +122,8 @@ Details
 - `start_date` - [Start date](https://help.highbond.com/helpdocs/analytics/13/user-guide/en-us/Content/table_definition/c_formats_of_date_and_time_source_data.htm) of this assignment.
 - `resign_date` - [End date](https://help.highbond.com/helpdocs/analytics/13/user-guide/en-us/Content/table_definition/c_formats_of_date_and_time_source_data.htm) of this assignment.
 
-Special Flag
--------------
+### Special Flag
+
 The `--overwrite-assignments` in the command can be used to not merge new with existing assignments.
 Instead, all existing assignments belonging to officers named in the `officer_id` column are deleted first,
 before the new assignments contained in the provided csv are created in the database.
@@ -136,8 +136,8 @@ Salaries csv
 - Required: `id, officer_id, salary, year`
 - Optional: `overtime_pay, is_fiscal_year`
 
-Details
---------
+### Details
+
 - `officer_id` - Integer referring to `id` of existing officer or string starting with `#` referring to a newly created officer in the provided officers csv.
 - `salary` - Number representing the officer's salary in the given year.
 - `year` - Integer, the year this salary information refers to.
@@ -151,8 +151,8 @@ Incidents csv
 - Optional: `date, time, report_number, description, street_name, cross_street1, cross_street2, city, state, zip_code,
   created_by, last_updated_by, officer_ids, license_plates`
 
-Details
---------
+### Details
+
 - `department_name` - Name of department exactly as in the server database.
    This needs to match the department name provided with the command.
 - `department_state` - Name of department state exactly as it is in the server database, which will be the
@@ -180,8 +180,8 @@ Links csv
 - Required: `id, url`
 - Optional: `title, link_type, description, author, created_by, officer_ids, incident_ids`
 
-Details
---------
+### Details
+
 - `url` - Full url of the link starting with `http://` or `https://`.
 - `title` - Text that will be displayed as the link.
 - `description` - A short description of the link.
