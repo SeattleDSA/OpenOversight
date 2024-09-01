@@ -92,7 +92,7 @@
                 <span class="sr-only">Edit</span>
                 <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
               </a>
-              <a href="{{ url_for("main.link_api_delete", officer_id=officer.id, obj_id=link.id) }}">
+              <a href="{{ url_for('main.link_api_delete', officer_id=officer.id, obj_id=link.id) }}">
                 <span class="sr-only">Delete</span>
                 <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
               </a>
@@ -112,7 +112,7 @@
     {% endif %}
   {% endfor %}
   {% if officer and (current_user.is_admin_or_coordinator(officer.department)) %}
-    <a href="{{ url_for("main.link_api_new", officer_id=officer.id) }}"
+    <a href="{{ url_for('main.link_api_new', officer_id=officer.id) }}"
        class="btn btn-primary">New Link/Video</a>
   {% endif %}
 {% endif %}

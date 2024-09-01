@@ -4,6 +4,7 @@ Script to populate the first employed date field on officers.
 
 This uses the assignments.csv file which can be downloaded from from OO directly.
 """
+
 import logging
 from pathlib import Path
 

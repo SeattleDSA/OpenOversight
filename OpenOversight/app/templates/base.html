@@ -51,7 +51,7 @@
   <body role="document">
     <nav class="navbar navbar-expand-lg bg-body-tertiary sticky-top">
       <div class="container">
-        <a class="navbar-brand" href="{{ url_for("main.index") }}">OpenOversight</a>
+        <a class="navbar-brand" href="{{ url_for('main.index') }}">OpenOversight</a>
         <button type="button"
                 class="navbar-toggler"
                 data-bs-toggle="collapse"
@@ -64,23 +64,23 @@
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="navbar-nav me-auto">
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for("main.browse") }}">Browse</a>
+              <a class="nav-link" href="{{ url_for('main.browse') }}">Browse</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for("main.get_officer") }}">Find an Officer</a>
+              <a class="nav-link" href="{{ url_for('main.get_officer') }}">Find an Officer</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for("main.submit_data") }}">Submit Images</a>
+              <a class="nav-link" href="{{ url_for('main.submit_data') }}">Submit Images</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for("main.get_started_labeling") }}">Volunteer</a>
+              <a class="nav-link" href="{{ url_for('main.get_started_labeling') }}">Volunteer</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for("main.about_oo") }}">About</a>
+              <a class="nav-link" href="{{ url_for('main.about_oo') }}">About</a>
             </li>
             {% if current_user and current_user.is_administrator %}
               <li class="nav-item">
-                <a class="nav-link" href="{{ url_for("auth.get_users") }}">Users</a>
+                <a class="nav-link" href="{{ url_for('auth.get_users') }}">Users</a>
               </li>
             {% endif %}
           </ul>
@@ -98,26 +98,26 @@
                        href="{{ url_for('main.profile', username=current_user.username) }}">Profile</a>
                   </li>
                   <li>
-                    <a class="dropdown-item" href="{{ url_for("auth.change_password") }}">Change Password</a>
+                    <a class="dropdown-item" href="{{ url_for('auth.change_password') }}">Change Password</a>
                   </li>
                   <li>
                     <a class="dropdown-item"
-                       href="{{ url_for("auth.change_email_request") }}">Change Email</a>
+                       href="{{ url_for('auth.change_email_request') }}">Change Email</a>
                   </li>
                   <li>
-                    <a class="dropdown-item" href="{{ url_for("auth.change_dept") }}">Change Default Department</a>
+                    <a class="dropdown-item" href="{{ url_for('auth.change_dept') }}">Change Default Department</a>
                   </li>
                   <li>
-                    <a class="dropdown-item" href="{{ url_for("auth.logout") }}">Log Out</a>
+                    <a class="dropdown-item" href="{{ url_for('auth.logout') }}">Log Out</a>
                   </li>
                 </ul>
               </li>
             {% else %}
               <li class="nav-item">
-                <a class="nav-link" href="{{ url_for("auth.register") }}">Register</a>
+                <a class="nav-link" href="{{ url_for('auth.register') }}">Register</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="{{ url_for("auth.login") }}">Log In</a>
+                <a class="nav-link" href="{{ url_for('auth.login') }}">Log In</a>
               </li>
             {% endif %}
           </ul>
@@ -161,7 +161,7 @@
                  target="_blank"
                  rel="noopener noreferrer">Seattle Tech Bloc</a>
               <br />
-              <a href="{{ url_for("main.all_data") }}" target="_blank">Download department data</a>
+              <a href="{{ url_for('main.all_data') }}" target="_blank">Download department data</a>
             </p>
           </div>
           <div class="col-sm-4">
@@ -180,18 +180,18 @@
                rel="noopener noreferrer"
                target="_blank"><i class="fa-solid fa-globe fa-3x social" aria-hidden="true"></i></a>
             <br>
-            <a href="{{ url_for("main.privacy_oo") }}" class="btn">Privacy Policy</a>
+            <a href="{{ url_for('main.privacy_oo') }}" class="btn">Privacy Policy</a>
           </div>
           <div class="col-sm-4">
             <h5>Navigation</h5>
             <p class="font-weight-300">
-              <a href="{{ url_for("main.get_officer") }}">Find an Officer</a>
+              <a href="{{ url_for('main.get_officer') }}">Find an Officer</a>
               <br>
-              <a href="{{ url_for("main.submit_data") }}">Submit Images</a>
+              <a href="{{ url_for('main.submit_data') }}">Submit Images</a>
               <br>
-              <a href="{{ url_for("main.get_started_labeling") }}">Volunteer</a>
+              <a href="{{ url_for('main.get_started_labeling') }}">Volunteer</a>
               <br>
-              <a href="{{ url_for("main.about_oo") }}">About</a>
+              <a href="{{ url_for('main.about_oo') }}">About</a>
               <br>
             </p>
           </div>

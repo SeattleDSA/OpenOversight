@@ -17,10 +17,10 @@
               <p class="my-4">
                 Search our public database for available information on officers in your city or to identify an officer with whom you have had a negative interaction.
               </p>
-              <a href="{{ url_for("main.browse") }}"
+              <a href="{{ url_for('main.browse') }}"
                  class="btn btn-lg btn-primary mt-1">Browse officers</a>
               <div class="small-horizontal-padding"></div>
-              <a href="{{ url_for("main.get_officer") }}"
+              <a href="{{ url_for('main.get_officer') }}"
                  id="cpd"
                  class="btn btn-lg btn-primary mt-1">Identify officers</a>
             </div>
@@ -33,7 +33,7 @@
               <div class="text-muted">Contribute to the database</div>
               <p class="my-4">Have a photo containing uniformed law enforcement officers? Drop them here.</p>
               <a class="btn btn-lg btn-primary"
-                 href="{{ url_for("main.submit_data") }}">Submit Image</a>
+                 href="{{ url_for('main.submit_data') }}">Submit Image</a>
             </div>
           </div>
         </div>
@@ -52,7 +52,7 @@
               sign up!
             </p>
             <a class="btn btn-lg btn-secondary"
-               href="{{ url_for("main.get_started_labeling") }}">Put me to work</a>
+               href="{{ url_for('main.get_started_labeling') }}">Put me to work</a>
           </div>
         </div>
         <div class="col-lg-6 bg-blue-gray text-left">

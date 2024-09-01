@@ -19,7 +19,7 @@
       <div class="text-center frontpage-leads">
         <p>
           <a class="btn btn-lg btn-primary"
-             href="{{ url_for("main.get_tutorial") }}">
+             href="{{ url_for('main.get_tutorial') }}">
             {{ render_icon("exclamation-triangle-fill") }}
             Tutorial
           </a>
@@ -27,7 +27,7 @@
         <p>New to working on images for OpenOversight? Or just need a refresher?</p>
         <p>
           <a class="btn btn-lg btn-primary"
-             href="{{ url_for("main.leaderboard") }}">
+             href="{{ url_for('main.leaderboard') }}">
             {{ render_icon("hand-thumbs-up") }}
             Leaderboard
           </a>
@@ -54,7 +54,7 @@
       {% endfor %}
       <div class="text-center frontpage-leads">
         {% if current_user.is_administrator %}
-          <a href="{{ url_for("main.add_department") }}"
+          <a href="{{ url_for('main.add_department') }}"
              class="btn btn-primary"
              role="button">
             {{ render_icon("plus") }}
@@ -62,19 +62,19 @@
           </a>
         {% endif %}
         {% if current_user.is_administrator or current_user.is_area_coordinator %}
-          <a href="{{ url_for("main.add_officer") }}"
+          <a href="{{ url_for('main.add_officer') }}"
              class="btn btn-primary"
              role="button">
             {{ render_icon("plus") }}
             Add New Officer
           </a>
-          <a href="{{ url_for("main.add_unit") }}"
+          <a href="{{ url_for('main.add_unit') }}"
              class="btn btn-primary"
              role="button">
             {{ render_icon("plus") }}
             Add New Unit
           </a>
-          <a href="{{ url_for("main.incident_api_new") }}"
+          <a href="{{ url_for('main.incident_api_new') }}"
              class="btn btn-primary"
              role="button">
             {{ render_icon("plus") }}
@@ -132,7 +132,7 @@
                 </div>
               </form>
               <p class="text-center">
-                <a href="{{ url_for("auth.password_reset_request") }}">Forgot Password</a>
+                <a href="{{ url_for('auth.password_reset_request') }}">Forgot Password</a>
               </p>
             </div>
             <div class="col-lg-6 col-half-no-border bg-blue-gray">
@@ -141,7 +141,7 @@
                   <small>Interested in volunteering?</small>
                 </h1>
                 <div class="horizontal-padding">
-                  <a class="btn btn-lg btn-info" href="{{ url_for("auth.register") }}">Sign Up</a>
+                  <a class="btn btn-lg btn-info" href="{{ url_for('auth.register') }}">Sign Up</a>
                 </div>
               </div>
             </div>

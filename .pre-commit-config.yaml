@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.0.1
+    rev: v4.6.0
     hooks:
       - id: trailing-whitespace
       - id: check-docstring-first
@@ -23,7 +23,7 @@ repos:
       - id: requirements-txt-fixer
 
   - repo: https://github.com/pre-commit/pygrep-hooks
-    rev: v1.7.0
+    rev: v1.10.0
     hooks:
       - id: python-check-blanket-noqa
       - id: python-check-mock-methods
@@ -31,7 +31,7 @@ repos:
       - id: python-no-log-warn
 
   - repo: https://github.com/PyCQA/isort
-    rev: 5.12.0
+    rev: 5.13.2
     hooks:
       - id: isort
         name: Run isort to sort imports
@@ -47,20 +47,6 @@ repos:
           - --ensure-newline-before-comments
           - --line-length=88
 
-  - repo: https://github.com/pycqa/pydocstyle
-    rev: 5.1.1
-    hooks:
-      - id: pydocstyle
-        name: Run pydocstyle
-        args:
-          - --convention=pep257
-          # Do not require docstrings, only check existing ones. (D1)
-          # Allow for a newline after a docstring. (D202)
-          # Don't require a summary line. (D205)
-          # Don't require a period on the first line. (D400)
-          - --add-ignore=D1,D202,D205,D400
-        exclude: tests/
-
   - repo: local
     hooks:
       - id: no-shebang
@@ -73,7 +59,7 @@ repos:
         files: \.py$
 
   - repo: https://github.com/ikamensh/flynt/
-    rev: '1.0.0'
+    rev: '1.0.1'
     hooks:
         - id: flynt
           exclude: ^build/.*$|^.tox/.*$|^venv/.*$
@@ -82,7 +68,7 @@ repos:
             - --quiet
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.4.10
+    rev: v0.6.3
     hooks:
       - id: ruff
         types_or: [python,pyi]
@@ -96,12 +82,12 @@ repos:
           - --target-version=py311
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.9.0
+    rev: v1.11.2
     hooks:
         - id: mypy
 
   - repo: https://github.com/Riverside-Healthcare/djLint
-    rev: v1.32.1
+    rev: v1.35.2
     hooks:
       - id: djlint-reformat
         pass_filenames: false

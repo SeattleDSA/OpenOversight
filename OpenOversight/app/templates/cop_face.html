@@ -141,7 +141,7 @@
                        class="btn btn-sm btn-primary form-control addface-button"
                        value="Add identified face" />
                 <a class="btn btn-sm btn-secondary form-control launchroster-button"
-                   href="{{ url_for("main.get_officer") }}"
+                   href="{{ url_for('main.get_officer') }}"
                    target='_blank'>Launch roster search form</a>
                 <div class="text-center input-explanation">
                   <div class="text addface-button-explanation">
@@ -169,7 +169,7 @@
                 Next Photo
               </a>
             {% else %}
-              <a href="{{ url_for("main.label_data") }}"
+              <a href="{{ url_for('main.label_data') }}"
                  class="skip-button btn btn-lg btn-primary"
                  role="button">
                 <div>{{ render_icon("arrow-repeat") }}</div>
@@ -209,7 +209,7 @@
           <small class="muted">{{ department.name }}</small>
         </h4>
         <p>
-          <a href="{{ url_for("main.submit_data") }}"
+          <a href="{{ url_for('main.submit_data') }}"
              class="btn btn-lg btn-primary"
              role="button">Submit officer pictures to us</a>
         </p>

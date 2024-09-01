@@ -16,7 +16,7 @@
         {{ wtf.render_field(form.job_title, class="form-select") }}
         {{ wtf.render_field(form.unit, class="form-select") }}
         <h4>
-          <small><a href="{{ url_for("main.add_unit") }}">Don't see your unit? Add one!</a></small>
+          <small><a href="{{ url_for('main.add_unit') }}">Don't see your unit? Add one!</a></small>
         </h4>
         {{ wtf.render_field(form.start_date) }}
         {{ wtf.render_field(form.resign_date) }}

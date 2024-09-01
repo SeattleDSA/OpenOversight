@@ -26,6 +26,7 @@ DELETE FROM unit_types WHERE id IN (
         WHERE a.id IS NULL
 );
 """
+
 import bisect
 import logging
 from functools import partial

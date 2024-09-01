@@ -21,6 +21,7 @@ TRUNCATE jobs, assignments RESTART IDENTITY
 This script can theoretically be run on future roster updates (although salary date
 may need to be changed).
 """
+
 import logging
 from pathlib import Path
 from typing import NamedTuple

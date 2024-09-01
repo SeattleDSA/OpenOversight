@@ -20,12 +20,12 @@
         officers who may be a match.
       </p>
     </div>
-    <form action="{{ url_for("main.get_officer") }}" method="post" class="form">
+    <form action="{{ url_for('main.get_officer') }}" method="post" class="form">
       {{ form.hidden_tag() }}
       <div id="step-1"
            class="card mb-5"
-           data-ranks-url="{{ url_for("main.get_dept_ranks") }}"
-           data-units-url="{{ url_for("main.get_dept_units") }}">
+           data-ranks-url="{{ url_for('main.get_dept_ranks') }}"
+           data-units-url="{{ url_for('main.get_dept_units') }}">
         <div class="card-header bg-light-subtle">
           <h2 class="card-title">
             <small>Department</small>
