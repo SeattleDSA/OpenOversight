@@ -13,7 +13,7 @@ set positional-arguments
 
 
 default:
-    @just -lu
+    @just -ul
 
 # Create the .env file from the template
 dotenv:
