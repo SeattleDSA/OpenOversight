@@ -992,12 +992,13 @@ email = ["email-validator"]
 
 [[package]]
 name = "future"
-version = "0.18.3"
+version = "1.0.0"
 description = "Clean single-source support for Python 3 and 2"
 optional = false
 python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
 files = [
-    {file = "future-0.18.3.tar.gz", hash = "sha256:34a17436ed1e96697a86f9de3d15a3b0be01d8bc8de9c1dffd59fb8234ed5307"},
+    {file = "future-1.0.0-py3-none-any.whl", hash = "sha256:929292d34f5872e70396626ef385ec22355a1fae8ad29e1a734c3e43f9fbc216"},
+    {file = "future-1.0.0.tar.gz", hash = "sha256:bd2968309307861edae1458a4f8a4f3598c03be43b97521076aebf5d94c07b05"},
 ]
 
 [[package]]
@@ -3255,4 +3256,4 @@ WTForms = ">=1.0.5"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "181960211c2fb0f2573cd00bd655b5c71a3165d26a7f123c3c53c2440669a035"
+content-hash = "c9023962db8084bdb93aee883a284fb5c45c5e55dcb7cc9078de6f9f7b487903"
