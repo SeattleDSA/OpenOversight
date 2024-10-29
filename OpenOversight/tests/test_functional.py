@@ -351,7 +351,11 @@ def test_image_classification_and_tagging(mockdata, browser, server_port):
     browser.find_element(By.ID, "name").send_keys("Auburn Police Department")
     browser.find_element(By.ID, "short_name").send_keys("APD")
     Select(browser.find_element(By.ID, "state")).select_by_value("WA")
-    browser.find_element(By.ID, "submit").click()
+
+    submit = browser.find_element(By.ID, "submit")
+    scroll_to_element(browser, submit)
+    submit.click()
+
     wait_for_page_load(browser)
 
     # 2. Add a new officer
@@ -452,7 +456,11 @@ def test_anonymous_user_can_upload_image(mockdata, browser, server_port):
     browser.find_element(By.ID, "name").send_keys("Auburn Police Department")
     browser.find_element(By.ID, "short_name").send_keys("APD")
     Select(browser.find_element(By.ID, "state")).select_by_value("WA")
-    browser.find_element(By.ID, "submit").click()
+
+    submit = browser.find_element(By.ID, "submit")
+    scroll_to_element(browser, submit)
+    submit.click()
+
     wait_for_page_load(browser)
 
     # 2. Log out
